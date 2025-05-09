@@ -31,7 +31,7 @@ class Main extends PluginBase
         $this->config->save();
 
         $this->getServer()->getPluginManager()->registerEvents(new EnchantListener(), $this);
-        $this->getServer()->getCommandMap()->register($this, new EnchantCommand());
+        $this->getServer()->getCommandMap()->register("CustomEnchants", new EnchantCommand());
 
         new EnchantManager($this->config);
     }
