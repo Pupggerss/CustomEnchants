@@ -44,7 +44,7 @@ final class EnchantManager
     ];
 
     public function __construct(private Config $config){
-        $this->max_levels = $$this->config->getAll();
+        $this->max_levels = $this->config->getAll();
         $this->initEnchants();
     }
 
