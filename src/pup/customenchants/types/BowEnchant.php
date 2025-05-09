@@ -4,7 +4,6 @@
 namespace pup\customenchants\types;
 
 
-use JetBrains\PhpStorm\Pure;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
@@ -16,12 +15,14 @@ abstract class BowEnchant extends Enchantment
 {
     use ChanceTriat;
 
-    public static function onShoot(EntityShootBowEvent $event): void
+    public static function onShoot(EntityShootBowEvent $event)
+    : void
     {
         //NOOP
     }
 
-    public static function onHitBlock(ProjectileHitBlockEvent $event): void
+    public static function onHitBlock(ProjectileHitBlockEvent $event)
+    : void
     {
         $arrow = $event->getEntity();
         if (!$arrow instanceof Arrow) {
@@ -38,5 +39,6 @@ abstract class BowEnchant extends Enchantment
         }
     }
 
-    abstract public function execute(Player $player, Item $item, Arrow $arrow): void;
+    abstract public function execute(Player $player, Item $item, Arrow $arrow)
+    : void;
 }

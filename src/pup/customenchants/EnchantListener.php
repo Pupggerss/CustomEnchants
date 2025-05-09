@@ -22,7 +22,8 @@ class EnchantListener implements Listener
      * @param InventoryTransactionEvent $event
      * @priority HIGHEST
      */
-    public function onArmorChange(InventoryTransactionEvent $event): void
+    public function onArmorChange(InventoryTransactionEvent $event)
+    : void
     {
         ToggledArmorEnchant::onToggle($event);
     }
@@ -31,7 +32,8 @@ class EnchantListener implements Listener
      * @param EntityDamageEvent $event
      * @priority HIGHEST
      */
-    public function onDamage(EntityDamageEvent $event): void
+    public function onDamage(EntityDamageEvent $event)
+    : void
     {
         RandomArmorEnchant::onDamage($event);
     }
@@ -40,7 +42,8 @@ class EnchantListener implements Listener
      * @param BlockBreakEvent $event
      * @priority HIGHEST
      */
-    public function onBreak(BlockBreakEvent $event): void
+    public function onBreak(BlockBreakEvent $event)
+    : void
     {
         if ($event->isCancelled()) {
             return;
@@ -52,12 +55,14 @@ class EnchantListener implements Listener
      * @param ProjectileHitBlockEvent $event
      * @priority HIGHEST
      */
-    public function onShoot(ProjectileHitBlockEvent $event): void
+    public function onShoot(ProjectileHitBlockEvent $event)
+    : void
     {
         BowEnchant::onHitBlock($event);
     }
 
-    public function onJoin(PlayerJoinEvent $event): void
+    public function onJoin(PlayerJoinEvent $event)
+    : void
     {
         $player = $event->getPlayer();
         foreach ($player->getArmorInventory()->getContents() as $item) {
@@ -70,7 +75,8 @@ class EnchantListener implements Listener
         }
     }
 
-    public function onDeath(PlayerDeathEvent $event): void
+    public function onDeath(PlayerDeathEvent $event)
+    : void
     {
         $player = $event->getPlayer();
         foreach ($player->getArmorInventory()->getContents() as $item) {

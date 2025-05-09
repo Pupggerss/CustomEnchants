@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types\enchants\armor;
+namespace pup\customenchants\enchants\armor;
 
 
 use pocketmine\entity\effect\EffectInstance;
@@ -22,7 +22,7 @@ class GlowingEnchant extends ToggledArmorEnchant
     public function onDequip(Player $player, Item $item)
     : void
     {
-        if($player->getEffects()->has(VanillaEffects::NIGHT_VISION())){
+        if ($player->getEffects()->has(VanillaEffects::NIGHT_VISION())) {
             $player->getEffects()->remove(VanillaEffects::NIGHT_VISION());
         }
     }

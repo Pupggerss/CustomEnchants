@@ -14,7 +14,8 @@ abstract class RandomArmorEnchant extends Enchantment
 {
     use ChanceTriat;
 
-    public static function onDamage(EntityDamageEvent $event): void
+    public static function onDamage(EntityDamageEvent $event)
+    : void
     {
         $player = $event->getEntity();
         if (!$player instanceof Player) {
@@ -33,6 +34,7 @@ abstract class RandomArmorEnchant extends Enchantment
         }
     }
 
-    abstract public function execute(Player $player, ?Player $damager, Armor $armor): void;
+    abstract public function execute(Player $player, ?Player $damager, Armor $armor)
+    : void;
 
 }

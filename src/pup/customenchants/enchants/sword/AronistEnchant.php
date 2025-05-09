@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types\enchants\sword;
+namespace pup\customenchants\enchants\sword;
 
 
 use pocketmine\entity\Entity;
@@ -19,7 +19,8 @@ class AronistEnchant extends MeleeWeaponEnchantment
     /**
      * @inheritDoc
      */
-    public function isApplicableTo(Entity $victim): bool
+    public function isApplicableTo(Entity $victim)
+    : bool
     {
         return $victim instanceof Living;
     }
@@ -27,16 +28,18 @@ class AronistEnchant extends MeleeWeaponEnchantment
     /**
      * @inheritDoc
      */
-    public function getDamageBonus(int $enchantmentLevel): float
+    public function getDamageBonus(int $enchantmentLevel)
+    : float
     {
         return 0;
     }
 
-    public function onPostAttack(Entity $attacker, Entity $victim, int $enchantmentLevel): void
+    public function onPostAttack(Entity $attacker, Entity $victim, int $enchantmentLevel)
+    : void
     {
         if ($victim instanceof Player && $attacker instanceof Player) {
             $chance = $this->calculateChance($enchantmentLevel, $this->getMaxLevel(), 5);
-            if(random_int(1, 100) <= $chance) {
+            if (random_int(1, 100) <= $chance) {
                 while ($attacker->isOnFire()) {
                     $additionalDamage = $enchantmentLevel * 1.5;
 

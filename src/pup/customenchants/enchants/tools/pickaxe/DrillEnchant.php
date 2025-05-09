@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types\enchants\tools\pickaxe;
+namespace pup\customenchants\enchants\tools\pickaxe;
 
 
 use pocketmine\block\Block;
@@ -16,7 +16,8 @@ class DrillEnchant extends ToolEnchant
     private static array $lastBreakFace = [];
     private bool $breakingBlocks = false;
 
-    public function execute(Player $player, Item $item, Block $block): void
+    public function execute(Player $player, Item $item, Block $block)
+    : void
     {
         if ($this->breakingBlocks) {
             return;
@@ -35,13 +36,20 @@ class DrillEnchant extends ToolEnchant
                 $faceUp = Facing::rotate($breakFace, Facing::axis($breakFace) !== Axis::Z ? Axis::Z : Axis::X, true);
 
                 $blocksToBreak = [
-                    $currentBlock->getSide($faceLeft), // Center Left
-                    $currentBlock->getSide(Facing::opposite($faceLeft)), // Center Right
-                    $currentBlock->getSide($faceUp), // Center Top
-                    $currentBlock->getSide(Facing::opposite($faceUp)), // Center Bottom
-                    $currentBlock->getSide($faceUp)->getSide($faceLeft), // Top Left
-                    $currentBlock->getSide($faceUp)->getSide(Facing::opposite($faceLeft)), // Top Right
-                    $currentBlock->getSide(Facing::opposite($faceUp))->getSide($faceLeft), // Bottom Left
+                    $currentBlock->getSide($faceLeft),
+                    // Center Left
+                    $currentBlock->getSide(Facing::opposite($faceLeft)),
+                    // Center Right
+                    $currentBlock->getSide($faceUp),
+                    // Center Top
+                    $currentBlock->getSide(Facing::opposite($faceUp)),
+                    // Center Bottom
+                    $currentBlock->getSide($faceUp)->getSide($faceLeft),
+                    // Top Left
+                    $currentBlock->getSide($faceUp)->getSide(Facing::opposite($faceLeft)),
+                    // Top Right
+                    $currentBlock->getSide(Facing::opposite($faceUp))->getSide($faceLeft),
+                    // Bottom Left
                     $currentBlock->getSide(Facing::opposite($faceUp))->getSide(Facing::opposite($faceLeft))
                 ];
 

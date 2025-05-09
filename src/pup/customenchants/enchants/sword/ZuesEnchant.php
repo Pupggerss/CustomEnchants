@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types\enchants\sword;
+namespace pup\customenchants\enchants\sword;
 
 
 use pocketmine\entity\Entity;
@@ -22,7 +22,8 @@ class ZuesEnchant extends MeleeWeaponEnchantment
     /**
      * @inheritDoc
      */
-    public function isApplicableTo(Entity $victim): bool
+    public function isApplicableTo(Entity $victim)
+    : bool
     {
         return $victim instanceof Living;
     }
@@ -30,23 +31,26 @@ class ZuesEnchant extends MeleeWeaponEnchantment
     /**
      * @inheritDoc
      */
-    public function getDamageBonus(int $enchantmentLevel): float
+    public function getDamageBonus(int $enchantmentLevel)
+    : float
     {
         return 0;
     }
 
-    public function onPostAttack(Entity $attacker, Entity $victim, int $enchantmentLevel): void
+    public function onPostAttack(Entity $attacker, Entity $victim, int $enchantmentLevel)
+    : void
     {
         if ($victim instanceof Player && $attacker instanceof Player) {
             $chance = $this->calculateChance($enchantmentLevel, $this->getMaxLevel(), 5);
-            if(random_int(1, 100) <= $chance) {
+            if (random_int(1, 100) <= $chance) {
                 self::lightning($victim);
                 $victim->setHealth($victim->getHealth() - ($enchantmentLevel * 2));
             }
         }
     }
 
-    private static function lightning(Entity $player): void
+    private static function lightning(Entity $player)
+    : void
     {
         $pos = $player->getPosition();
         $light2 = new AddActorPacket();
@@ -63,7 +67,8 @@ class ZuesEnchant extends MeleeWeaponEnchantment
         $player->getWorld()->addParticle($pos, $particle, $player->getWorld()->getPlayers());
         $sound2 = PlaySoundPacket::create("ambient.weather.thunder", $pos->getX(), $pos->getY(), $pos->getZ(), 1, 1);
 
-        NetworkBroadcastUtils::broadcastPackets($player->getWorld()->getPlayers(), [$light2, $sound2]);
+        NetworkBroadcastUtils::broadcastPackets($player->getWorld()->getPlayers(), [$light2,
+            $sound2]);
     }
 
 }

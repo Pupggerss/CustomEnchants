@@ -4,7 +4,6 @@
 namespace pup\customenchants\types;
 
 
-use JetBrains\PhpStorm\Pure;
 use pocketmine\block\Block;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\item\enchantment\Enchantment;
@@ -15,7 +14,8 @@ abstract class ToolEnchant extends Enchantment
 {
     use ChanceTriat;
 
-    public static function onBreak(BlockBreakEvent $event): void
+    public static function onBreak(BlockBreakEvent $event)
+    : void
     {
         $player = $event->getPlayer();
         $item = $event->getItem();
@@ -27,6 +27,7 @@ abstract class ToolEnchant extends Enchantment
         }
     }
 
-    abstract public function execute(Player $player, Item $item, Block $block): void;
+    abstract public function execute(Player $player, Item $item, Block $block)
+    : void;
 
 }

@@ -11,8 +11,9 @@ use pocketmine\item\Durable;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\player\Player;
 
-class EnchantComand extends Command
+class EnchanterComand extends Command
 {
+    //TODO: REDO AND MAKE THIS BETTER LMAO
     public function __construct()
     {
         parent::__construct("enchanter", "Adds an enchant to the item in hand", "/enchanter", ["ce"]);
@@ -21,7 +22,10 @@ class EnchantComand extends Command
 
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
-        if($sender instanceof Player){
+        if ($sender instanceof Player) {
+            if(!isset($args)){
+                return;
+            }
             $enchant = $args[0];
             if (is_numeric($enchant)) {
                 $flip = array_flip(EnchantManager::ID);

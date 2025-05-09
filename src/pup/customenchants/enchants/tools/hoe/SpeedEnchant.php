@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types\enchants\tools\hoe;
+namespace pup\customenchants\enchants\tools\hoe;
 
 
 use pocketmine\block\Block;

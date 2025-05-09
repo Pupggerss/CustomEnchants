@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types\enchants\armor;
+namespace pup\customenchants\enchants\armor;
 
 
 use pocketmine\entity\effect\EffectInstance;
@@ -22,7 +22,7 @@ class BunnyEnchant extends ToggledArmorEnchant
     public function onDequip(Player $player, Item $item)
     : void
     {
-        if($player->getEffects()->has(VanillaEffects::JUMP_BOOST())){
+        if ($player->getEffects()->has(VanillaEffects::JUMP_BOOST())) {
             $player->getEffects()->remove(VanillaEffects::JUMP_BOOST());
         }
     }

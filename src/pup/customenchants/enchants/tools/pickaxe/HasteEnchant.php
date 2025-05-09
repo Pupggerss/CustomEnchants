@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types\enchants\tools\pickaxe;
+namespace pup\customenchants\enchants\tools\pickaxe;
 
 
 use pocketmine\block\Block;

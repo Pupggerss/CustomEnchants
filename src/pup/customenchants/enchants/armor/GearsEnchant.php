@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types\enchants\armor;
+namespace pup\customenchants\enchants\armor;
 
 
 use pocketmine\entity\effect\EffectInstance;
@@ -16,13 +16,13 @@ class GearsEnchant extends ToggledArmorEnchant
     public function onEquip(Player $player, Item $item)
     : void
     {
-       $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), PHP_INT_MAX, $item->getEnchantment($this)->getLevel()));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), PHP_INT_MAX, $item->getEnchantment($this)->getLevel()));
     }
 
     public function onDequip(Player $player, Item $item)
     : void
     {
-        if($player->getEffects()->has(VanillaEffects::SPEED())){
+        if ($player->getEffects()->has(VanillaEffects::SPEED())) {
             $player->getEffects()->remove(VanillaEffects::SPEED());
         }
     }

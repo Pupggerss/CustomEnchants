@@ -14,12 +14,14 @@ abstract class ToggledArmorEnchant extends Enchantment
 {
     public static array $armorListeners = [];
 
-    public static function onToggle(InventoryTransactionEvent $event): void
+    public static function onToggle(InventoryTransactionEvent $event)
+    : void
     {
         $player = $event->getTransaction()->getSource();
         if (!isset(self::$armorListeners[$player->getName()])) {
             $listener = new CallbackInventoryListener(
-                $run = static function (Inventory $inventory, int $slot, Item $old) use ($player): void {
+                $run = static function (Inventory $inventory, int $slot, Item $old) use ($player)
+                : void {
                     $newItem = $inventory->getItem($slot);
                     if (!$newItem->equals($old, false)) {
                         foreach ($newItem->getEnchantments() as $enchantment) {
@@ -36,7 +38,8 @@ abstract class ToggledArmorEnchant extends Enchantment
                         }
                     }
                 },
-                function (Inventory $inventory, array $oldContents) use ($player, $run): void {
+                function (Inventory $inventory, array $oldContents) use ($player, $run)
+                : void {
                     foreach ($oldContents as $slot => $item) {
                         if (!$item->equals($inventory->getItem($slot), false)) {
                             $run($inventory, $slot, $item);
@@ -50,11 +53,14 @@ abstract class ToggledArmorEnchant extends Enchantment
     }
 
 
-    abstract public function onEquip(Player $player, Item $item): void;
+    abstract public function onEquip(Player $player, Item $item)
+    : void;
 
-    abstract public function onDequip(Player $player, Item $item): void;
+    abstract public function onDequip(Player $player, Item $item)
+    : void;
 
-    public static function removeArmorListener(Player $player): void
+    public static function removeArmorListener(Player $player)
+    : void
     {
         $playerName = $player->getName();
         if (isset(self::$armorListeners[$playerName])) {
