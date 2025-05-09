@@ -9,7 +9,10 @@ use pocketmine\command\CommandSender;
 use pocketmine\data\bedrock\EnchantmentIdMap;
 use pocketmine\item\Durable;
 use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\Item;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
+use pocketmine\utils\TextFormat;
 
 class EnchanterComand extends Command
 {
@@ -23,39 +26,50 @@ class EnchanterComand extends Command
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
         if ($sender instanceof Player) {
-            if(!isset($args)){
+            if(count($args) < 2){
+                $sender->sendMessage(TextFormat::RED . "Usage: /enchanter <enchant name/id> <enchantlevel>");
                 return;
             }
             $enchant = $args[0];
             if (is_numeric($enchant)) {
                 $flip = array_flip(EnchantManager::ID);
                 if (!isset($flip[$enchant])) {
-                    $sender->sendMessage("There is no enchant with that id.");
+                    $sender->sendMessage(TextFormat::RED . "There is no enchant with that id.");
                     return;
                 }
             } else {
                 if (!isset(EnchantManager::ID[$enchant])) {
-                    $sender->sendMessage("There is no enchant with that name.");
+                    $sender->sendMessage(TextFormat::RED . "There is no enchant with that name.");
                     return;
                 }
                 $enchant = EnchantManager::ID[$enchant];
             }
             $enchant = EnchantmentIdMap::getInstance()->fromId($enchant);
             $item = $sender->getInventory()->getItemInHand();
+
+            if($item === VanillaItems::AIR() || !$item instanceof Item){
+                $sender->sendMessage(TextFormat::RED . "No item in hand!");
+                return;
+            }
+
             if (!$item instanceof Durable) {
                 $sender->sendMessage("This item cannot be enchanted");
                 return;
             }
+
             $level = $args[1];
             if (is_nan($level)) {
-                $sender->sendMessage("The level must be a number.");
+                $sender->sendMessage(TextFormat::RED . "The level must be a number.");
                 return;
             }
+
             $level = abs($level);
+            //TODO: Check item and if level greater than max
+
             $item->addEnchantment(new EnchantmentInstance($enchant, $level));
             $item = EnchantManager::loreItem($item);
             $sender->getInventory()->setItemInHand($item);
-            $sender->sendMessage("Item successfully enchanted.");
+            $sender->sendMessage(TextFormat::GREEN . "Item successfully enchanted.");
         }
     }
 }
