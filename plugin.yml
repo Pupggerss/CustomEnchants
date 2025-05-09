@@ -1,0 +1,10 @@
+name: CustomEnchant
+main: pup\customenchants\Main
+author: pup
+api-version: 5.0.0
+version: 1.0.0
+
+permissions:
+  enchanter.command:
+    default: op
+    description: Adds an enchant to the item in hand

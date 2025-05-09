@@ -1,0 +1,12 @@
+{
+  "name": "dre/pm",
+  "description": "description",
+  "require": {
+    "pocketmine/pocketmine-mp": "*"
+  },
+  "autoload": {
+    "classmap": [
+      "src"
+    ]
+  }
+}
