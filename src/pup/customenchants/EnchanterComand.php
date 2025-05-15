@@ -71,9 +71,14 @@ class EnchanterComand extends Command
         }
 
         $level = (int)abs($level);
-        if($level > $enchant->getMaxLevel()) {
-            $sender->sendMessage(TextFormat::RED . "Provided level is greater than max level!");
-            return;
+
+        $config = Main::getInstance()->getConfig();
+        $maxlevel = $config->get("max_level", true);
+        if($maxlevel) {
+            if ($level > $enchant->getMaxLevel()) {
+                $sender->sendMessage(TextFormat::RED . "Provided level is greater than max level!");
+                return;
+            }
         }
         $check = EnchantManager::canApplyEnchant($enchant->getName(), $item);
 
