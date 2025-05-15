@@ -8,6 +8,7 @@ use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase
 {
+    //TODO: rewrite ce system & introduce configing
 
     private static self $instance;
 

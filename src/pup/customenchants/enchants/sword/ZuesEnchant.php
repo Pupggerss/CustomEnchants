@@ -13,11 +13,9 @@ use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\protocol\types\entity\PropertySyncData;
 use pocketmine\player\Player;
 use pocketmine\world\particle\BlockBreakParticle;
-use pup\customenchants\types\ChanceTriat;
 
 class ZuesEnchant extends MeleeWeaponEnchantment
 {
-    use ChanceTriat;
 
     /**
      * @inheritDoc

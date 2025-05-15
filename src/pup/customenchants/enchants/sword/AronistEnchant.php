@@ -10,12 +10,9 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\enchantment\MeleeWeaponEnchantment;
 use pocketmine\player\Player;
 use pocketmine\world\particle\FlameParticle;
-use pup\customenchants\types\ChanceTriat;
 
 class AronistEnchant extends MeleeWeaponEnchantment
 {
-    use ChanceTriat;
-
     /**
      * @inheritDoc
      */

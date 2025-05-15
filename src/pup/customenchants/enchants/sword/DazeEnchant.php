@@ -10,11 +10,9 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\item\enchantment\MeleeWeaponEnchantment;
 use pocketmine\player\Player;
-use pup\customenchants\types\ChanceTriat;
 
 class DazeEnchant extends MeleeWeaponEnchantment
 {
-    use ChanceTriat;
 
     /**
      * @inheritDoc

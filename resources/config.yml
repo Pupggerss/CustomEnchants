@@ -1,0 +1,54 @@
+# ========================
+#      CONFIG VERSION
+# ========================
+config_version: 1.0.0
+
+# ========================
+#        RARITIES
+# ========================
+rarities:
+  COMMON:
+    weight: 50 #Chance of getting from a ce book
+    display_color: "§f"
+    enabled: true
+
+  UNCOMMON:
+    weight: 25
+    display_color: "§a"
+    enabled: true
+
+  RARE:
+    weight: 15
+    display_color: "§9"
+    enabled: true
+
+  EPIC:
+    weight: 10
+    display_color: "§5"
+    enabled: true
+
+  LEGENDARY:
+    weight: 5
+    display_color: "§6"
+    enabled: true
+
+  MASTERY:
+    weight: 3
+    display_color: "§3"
+    enabled: true
+
+  HEROIC:
+    weight: 1
+    display_color: "§4"
+    enabled: true
+# ========================
+#         MESSAGES
+# ========================
+messages:
+  proc_messages:
+    enabled: true
+    format: "§e{enchant_name} §fhas activated! (Level: {level})"
+
+  rarity_colors:
+    enabled: true
+    prefix_format: "{rarity_color}[{rarity}]§r "

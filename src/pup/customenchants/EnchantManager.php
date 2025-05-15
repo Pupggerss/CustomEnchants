@@ -8,9 +8,9 @@ use pocketmine\data\bedrock\EnchantmentIdMap;
 use pocketmine\item\enchantment\ItemFlags;
 use pocketmine\item\enchantment\Rarity;
 use pocketmine\item\Item;
-use pocketmine\lang\Translatable;
 use pup\customenchants\enchants\armor\{BunnyEnchant, GearsEnchant, GlowingEnchant, OverloadEnchant};
 use pup\customenchants\enchants\sword\{AronistEnchant, BlindEnchant, DazeEnchant, ZuesEnchant};
+use pup\customenchants\enchants\bow\TeleportEnchant;
 use pup\customenchants\enchants\tools\hoe\SpeedEnchant;
 use pup\customenchants\enchants\tools\pickaxe\{DrillEnchant, FeedEnchant, HasteEnchant};
 
@@ -60,7 +60,8 @@ final class EnchantManager
             self::ID['overload'] => new OverloadEnchant("Overload", Rarity::RARE, ItemFlags::ARMOR, ItemFlags::NONE, $this->max_levels['armor_levels']['overload']),
             self::ID['glowing']  => new GlowingEnchant("Glowing", Rarity::UNCOMMON, ItemFlags::HEAD, ItemFlags::NONE, $this->max_levels['armor_levels']['glowing']),
             self::ID['gears']    => new GearsEnchant("Gears", Rarity::COMMON, ItemFlags::FEET, ItemFlags::NONE, $this->max_levels['armor_levels']['gears']),
-            self::ID['bunny']    => new BunnyEnchant("Bunny", Rarity::UNCOMMON, ItemFlags::FEET, ItemFlags::NONE, $this->max_levels['armor_levels']['bunny'])
+            self::ID['bunny']    => new BunnyEnchant("Bunny", Rarity::UNCOMMON, ItemFlags::FEET, ItemFlags::NONE, $this->max_levels['armor_levels']['bunny']),
+            self::ID['teleport'] => new TeleportEnchant("Teleport", Rarity::UNCOMMON, "Teleport", 1, ItemFlags::BOW)
         ];
 
         foreach ($ces as $id => $enchant) {
@@ -79,12 +80,8 @@ final class EnchantManager
         foreach ($item->getEnchantments() as $enchantmentInstance) {
             $enchantment = $enchantmentInstance->getType();
             $rarity = $enchantment->getRarity();
-            $name = $enchantment->getName();
+            $name = $enchantment->getName()->getText(); //should fix enchantment.unbreaking
             $level = $item->getEnchantmentLevel($enchantment);
-
-            if ($name instanceof Translatable) {
-                $name = $name->getText();
-            }
 
             $enchantLore[" §r§8» §r" . self::RARITY_TO_COLOR[$rarity] . $name . " " . self::intToRoman($level)] = $rarity;
         }

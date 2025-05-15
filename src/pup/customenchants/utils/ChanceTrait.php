@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\types;
+namespace pup\customenchants;
 
 
 trait ChanceTriat

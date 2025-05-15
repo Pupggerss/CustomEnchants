@@ -6,14 +6,12 @@ namespace pup\customenchants\types;
 
 use pocketmine\block\Block;
 use pocketmine\event\block\BlockBreakEvent;
-use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
+use pup\customenchants\CustomEnchant;
 
-abstract class ToolEnchant extends Enchantment
+abstract class ToolEnchant extends CustomEnchant
 {
-    use ChanceTriat;
-
     public static function onBreak(BlockBreakEvent $event)
     : void
     {

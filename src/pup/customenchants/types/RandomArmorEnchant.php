@@ -7,13 +7,11 @@ namespace pup\customenchants\types;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Armor;
-use pocketmine\item\enchantment\Enchantment;
 use pocketmine\player\Player;
+use pup\customenchants\CustomEnchant;
 
-abstract class RandomArmorEnchant extends Enchantment
+abstract class RandomArmorEnchant extends CustomEnchant
 {
-    use ChanceTriat;
-
     public static function onDamage(EntityDamageEvent $event)
     : void
     {
