@@ -81,6 +81,80 @@ final class EnchantManager
                 $data['max_level'],
                 ItemFlags::PICKAXE
             ),
+            'speed' => new SpeedEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::HOE,
+                ItemFlags::PICKAXE
+            ),
+            'teleport' => new TeleportEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::BOW
+            ),
+            'bunny' => new BunnyEnchant(
+              $data['display_name'],
+              Rarity::fromName($data['rarity']),
+              $data['description'],
+              $data['max_level'],
+              ItemFlags::FEET
+            ),
+            'gears' => new GearsEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::FEET
+            ),
+            'glowing' => new GlowingEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::HEAD
+            ),
+            'overload' => new OverloadEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::ARMOR
+            ),
+            'aronsit' => new AronistEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::SWORD,
+                ItemFlags::AXE
+            ),
+            'blind' => new BlindEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::SWORD,
+                ItemFlags::AXE
+            ),
+            'daze' => new DazeEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::SWORD
+            ),
+            'zues' => new ZuesEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::SWORD,
+                ItemFlags::AXE
+            ),
             default => throw new RuntimeException("Unknown enchant type: $name")
         };
 

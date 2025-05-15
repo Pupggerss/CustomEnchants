@@ -38,7 +38,7 @@ rarities:
     enabled: true
 
   HEROIC:
-    weight: 1
+    weight: 0
     display_color: "§4"
     enabled: true
 # ========================

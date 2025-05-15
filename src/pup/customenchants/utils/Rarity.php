@@ -16,14 +16,50 @@ final class Rarity
 
     public static function init(array $config): void
     {
-        //TODO: Add all the rarities :(
         self::$rarities = [
             self::COMMON => [
                 'name' => 'COMMON',
-                'color' => $config['COMMON']['display_color'] ?? '§f',
-                'weight' => $config['COMMON']['weight'] ?? 50, //For books!
-                'enabled' => $config['COMMON']['enabled'] ?? true //TODO: add checks!
-            ]];
+                'color' => $config[self::COMMON]['display_color'] ?? '§f',
+                'weight' => $config[self::COMMON]['weight'] ?? 50,
+                'enabled' => $config[self::COMMON]['enabled'] ?? true
+            ],
+            self::UNCOMMON => [
+                'name' => 'UNCOMMON',
+                'color' => $config[self::UNCOMMON]['display_color'] ?? '§a',
+                'weight' => $config[self::UNCOMMON]['weight'] ?? 25,
+                'enabled' => $config[self::UNCOMMON]['enabled'] ?? true
+            ],
+            self::RARE => [
+                'name' => 'RARE',
+                'color' => $config[self::RARE]['display_color'] ?? '§9',
+                'weight' => $config[self::RARE]['weight'] ?? 15,
+                'enabled' => $config[self::RARE]['enabled'] ?? true
+            ],
+            self::EPIC => [
+                'name' => 'EPIC',
+                'color' => $config[self::EPIC]['display_color'] ?? '§5',
+                'weight' => $config[self::EPIC]['weight'] ?? 10,
+                'enabled' => $config[self::EPIC]['enabled'] ?? true
+            ],
+            self::LEGENDARY => [
+                'name' => 'LEGENDARY',
+                'color' => $config[self::LEGENDARY]['display_color'] ?? '§6',
+                'weight' => $config[self::LEGENDARY]['weight'] ?? 5,
+                'enabled' => $config[self::LEGENDARY]['enabled'] ?? true
+            ],
+            self::MASTERY => [
+                'name' => 'MASTERY',
+                'color' => $config[self::MASTERY]['display_color'] ?? '§3',
+                'weight' => $config[self::MASTERY]['weight'] ?? 3,
+                'enabled' => $config[self::MASTERY]['enabled'] ?? true
+            ],
+            self::HEROIC => [
+                'name' => 'HEROIC',
+                'color' => $config[self::HEROIC]['display_color'] ?? '§4',
+                'weight' => $config[self::HEROIC]['weight'] ?? 0,
+                'enabled' => $config[self::HEROIC]['enabled'] ?? true
+            ]
+        ];
     }
 
     public static function isEnabled(int $rarity): bool
