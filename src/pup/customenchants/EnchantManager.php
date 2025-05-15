@@ -5,20 +5,27 @@ namespace pup\customenchants;
 
 
 use pocketmine\data\bedrock\EnchantmentIdMap;
-use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\Armor;
+use pocketmine\item\Bow;
 use pocketmine\item\enchantment\ItemFlags;
 use pocketmine\item\Item;
 use pup\customenchants\enchants\armor\{BunnyEnchant, GearsEnchant, GlowingEnchant, OverloadEnchant};
 use pup\customenchants\enchants\sword\{AronistEnchant, BlindEnchant, DazeEnchant, ZuesEnchant};
+use pocketmine\item\Pickaxe;
+use pocketmine\item\Sword;
+use pocketmine\item\Tool;
+use pocketmine\item\VanillaItems;
 use pup\customenchants\enchants\bow\TeleportEnchant;
 use pup\customenchants\enchants\tools\hoe\SpeedEnchant;
 use pup\customenchants\enchants\tools\pickaxe\{DrillEnchant, FeedEnchant, HasteEnchant};
+use pup\customenchants\types\WeaponEnchant;
 use RuntimeException;
 
 final class EnchantManager
 {
     public const IDS = [
         //Start this at 1k cus wtf bedrock!
+        //Seems 1k is too much?
         'feed'     => 1000,
         'haste'    => 1001,
         'drill'    => 1002,
@@ -33,6 +40,23 @@ final class EnchantManager
         'gears'    => 1011,
         'bunny'    => 1012
     ];
+
+    private static array $class_map = [
+        'feed' => ['class' => FeedEnchant::class, 'flags' => [ItemFlags::PICKAXE]],
+        'drill' => ['class' => DrillEnchant::class, 'flags' => [ItemFlags::PICKAXE]],
+        'haste' => ['class' => HasteEnchant::class, 'flags' => [ItemFlags::PICKAXE]],
+        'speed' => ['class' => SpeedEnchant::class, 'flags' => [ItemFlags::HOE, ItemFlags::PICKAXE]],
+        'teleport' => ['class' => TeleportEnchant::class, 'flags' => [ItemFlags::BOW]],
+        'bunny' => ['class' => BunnyEnchant::class, 'flags' => [ItemFlags::FEET]],
+        'gears' => ['class' => GearsEnchant::class, 'flags' => [ItemFlags::FEET]],
+        'glowing' => ['class' => GlowingEnchant::class, 'flags' => [ItemFlags::HEAD]],
+        'overload' => ['class' => OverloadEnchant::class, 'flags' => [ItemFlags::ARMOR]],
+        'aronsit' => ['class' => AronistEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
+        'blind' => ['class' => BlindEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
+        'daze' => ['class' => DazeEnchant::class, 'flags' => [ItemFlags::SWORD]],
+        'zues' => ['class' => ZuesEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
+    ];
+
     private array $enchant_data;
 
     public function __construct()
@@ -47,6 +71,7 @@ final class EnchantManager
             try {
                 if ($enchant = $this->createConfiguredEnchant($name)) {
                     EnchantmentIdMap::getInstance()->register($id, $enchant);
+                    Main::getInstance()->getLogger()->info("Added {$enchant->getName()}");
                 }
             } catch (RuntimeException $e) {
                 Main::getInstance()->getLogger()->error($e->getMessage());
@@ -54,109 +79,32 @@ final class EnchantManager
         }
     }
 
-    private function createConfiguredEnchant(string $name): ?CustomEnchant
+    private function createConfiguredEnchant(string $name): CustomEnchant|WeaponEnchant|null
     {
         $data = $this->enchant_data[$name] ?? null;
         if (!$data || !($data['enabled'] ?? true)) return null;
 
-        $enchant = match ($name) {
-            'feed' => new FeedEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::PICKAXE,
-            ),
-            'drill' => new DrillEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::PICKAXE
-            ),
-            'haste' => new HasteEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::PICKAXE
-            ),
-            'speed' => new SpeedEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::HOE,
-                ItemFlags::PICKAXE
-            ),
-            'teleport' => new TeleportEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::BOW
-            ),
-            'bunny' => new BunnyEnchant(
-              $data['display_name'],
-              Rarity::fromName($data['rarity']),
-              $data['description'],
-              $data['max_level'],
-              ItemFlags::FEET
-            ),
-            'gears' => new GearsEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::FEET
-            ),
-            'glowing' => new GlowingEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::HEAD
-            ),
-            'overload' => new OverloadEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::ARMOR
-            ),
-            'aronsit' => new AronistEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::SWORD,
-                ItemFlags::AXE
-            ),
-            'blind' => new BlindEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::SWORD,
-                ItemFlags::AXE
-            ),
-            'daze' => new DazeEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::SWORD
-            ),
-            'zues' => new ZuesEnchant(
-                $data['display_name'],
-                Rarity::fromName($data['rarity']),
-                $data['description'],
-                $data['max_level'],
-                ItemFlags::SWORD,
-                ItemFlags::AXE
-            ),
-            default => throw new RuntimeException("Unknown enchant type: $name")
-        };
+        $mapping = self::$class_map[$name] ?? null;
+
+        if (!$mapping) {
+            throw new RuntimeException("Unknown enchant type or missing mapping: $name");
+        }
+
+        $className = $mapping['class'];
+        $flags = $mapping['flags'] ?? [];
+        if (!class_exists($className)) {
+            throw new RuntimeException("Enchant class not found: $className for enchant type: $name");
+        }
+
+        $constructorArgs = [
+            $data['display_name'] ?? $name,
+            Rarity::fromName($data['rarity']),
+            $data['description'] ?? '',
+            $data['max_level'] ?? 1,
+            ...$flags
+        ];
+
+        $enchant = new $className(...$constructorArgs);
 
         if ($data['has_chance'] ?? false) {
             $enchant->setBaseChance($data['base_chance'] ?? 0.1);
@@ -165,12 +113,10 @@ final class EnchantManager
         return $enchant;
     }
 
-    /*
-     * @deprecated
-     */
     public static function loreItem(Item $item)
     : Item
     {
+        //TODO: Config lore customization
         if (!is_null($item->getNamedTag()->getTag("hideEnchantments"))) {
             return $item;
         }
@@ -178,6 +124,9 @@ final class EnchantManager
         $enchantLore = [];
         foreach ($item->getEnchantments() as $enchantmentInstance) {
             $enchantment = $enchantmentInstance->getType();
+            if(!$enchantment instanceof CustomEnchant){
+                continue;
+            }
             $rarity = $enchantment->getRarity();
             $color = Rarity::getColor($rarity);
 
@@ -206,9 +155,89 @@ final class EnchantManager
         return $returnValue;
     }
 
-    private function getRarity(string $enchantName): int
+    private static function getItemTypeFlags(Item $item, bool $specifyId = true) : int
     {
-        $rarityName = $this->enchantConfig[$enchantName]['rarity'] ?? 'COMMON';
-        return Rarity::fromName($rarityName);
+        $flags = 0;
+
+        if($item instanceof Sword) {
+            $flags |= ItemFlags::SWORD;
+        } elseif($item instanceof Bow) {
+            $flags |= ItemFlags::BOW;
+        } elseif($item instanceof Pickaxe) {
+            $flags |= ItemFlags::PICKAXE;
+        } elseif($item instanceof Tool){
+            $flags |= ItemFlags::TOOL;
+        }
+
+        if ($item instanceof Armor) {
+            $flags |= ItemFlags::ARMOR;
+        }
+        if($specifyId){
+            $itemTypeId = $item->getTypeId();
+            if(in_array($itemTypeId, [
+                VanillaItems::LEATHER_CAP()->getTypeId(),
+                VanillaItems::GOLDEN_HELMET()->getTypeId(),
+                VanillaItems::CHAINMAIL_HELMET()->getTypeId(),
+                VanillaItems::IRON_HELMET()->getTypeId(),
+                VanillaItems::DIAMOND_HELMET()->getTypeId(),
+                VanillaItems::NETHERITE_HELMET()->getTypeId()
+            ])) {
+                $flags |= ItemFlags::HEAD;
+            }
+            if(in_array($itemTypeId, [
+                VanillaItems::LEATHER_TUNIC()->getTypeId(),
+                VanillaItems::GOLDEN_CHESTPLATE()->getTypeId(),
+                VanillaItems::CHAINMAIL_CHESTPLATE()->getTypeId(),
+                VanillaItems::IRON_CHESTPLATE()->getTypeId(),
+                VanillaItems::DIAMOND_CHESTPLATE()->getTypeId(),
+                VanillaItems::NETHERITE_CHESTPLATE()->getTypeId()
+            ])) {
+                $flags |= ItemFlags::TORSO;
+            }
+            if(in_array($itemTypeId, [
+                VanillaItems::LEATHER_PANTS()->getTypeId(),
+                VanillaItems::GOLDEN_LEGGINGS()->getTypeId(),
+                VanillaItems::CHAINMAIL_LEGGINGS()->getTypeId(),
+                VanillaItems::IRON_LEGGINGS()->getTypeId(),
+                VanillaItems::DIAMOND_LEGGINGS()->getTypeId(),
+                VanillaItems::NETHERITE_LEGGINGS()->getTypeId()
+            ])) {
+                $flags |= ItemFlags::LEGS;
+            }
+            if(in_array($itemTypeId, [
+                VanillaItems::LEATHER_BOOTS()->getTypeId(),
+                VanillaItems::GOLDEN_BOOTS()->getTypeId(),
+                VanillaItems::CHAINMAIL_BOOTS()->getTypeId(),
+                VanillaItems::IRON_BOOTS()->getTypeId(),
+                VanillaItems::DIAMOND_BOOTS()->getTypeId(),
+                VanillaItems::NETHERITE_BOOTS()->getTypeId()
+            ])) {
+                $flags |= ItemFlags::FEET;
+            }
+        }
+        return $flags;
+    }
+
+    public static function canApplyEnchant(string $enchantName, Item $item): bool
+    {
+        $enchantName = strtolower($enchantName);
+        $mapping = self::$class_map[$enchantName] ?? null;
+        if (!$mapping) {
+            return false;
+        }
+
+        $requiredFlags = $mapping['flags'] ?? [];
+        if (empty($requiredFlags)) {
+            return true;
+        }
+
+        $itemTypeFlags = self::getItemTypeFlags($item);
+
+        foreach ($requiredFlags as $requiredFlag) {
+            if (($itemTypeFlags & $requiredFlag) !== 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }

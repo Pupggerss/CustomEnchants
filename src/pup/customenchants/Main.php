@@ -25,8 +25,11 @@ class Main extends PluginBase
     public function onEnable()
     : void
     {
+
         $this->saveResource("enchantments.json");
+        $this->saveDefaultConfig();
         Rarity::init($this->getConfig()->get("rarities"));
+
         $this->getServer()->getPluginManager()->registerEvents(new EnchantListener(), $this);
         $this->getServer()->getCommandMap()->register("CustomEnchants", new EnchanterComand());
 

@@ -36,9 +36,9 @@ class BlindEnchant extends WeaponEnchant
     : void
     {
         if ($victim instanceof Player && $attacker instanceof Player) {
-            $chance = $this->calculateChance($enchantmentLevel, $this->getMaxLevel(), 5);
+            $chance = $this->getChance($enchantmentLevel, $this->getMaxLevel());
             if (random_int(1, 100) <= $chance) {
-                $victim->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), $enchantmentLevel * 75, $enchantmentLevel - 1));
+                $victim->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), $enchantmentLevel * 75, min($enchantmentLevel - 1, 1)));
             }
         }
     }

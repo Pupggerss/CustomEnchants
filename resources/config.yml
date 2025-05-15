@@ -48,7 +48,3 @@ messages:
   proc_messages:
     enabled: true
     format: "§e{enchant_name} §fhas activated! (Level: {level})"
-
-  rarity_colors:
-    enabled: true
-    prefix_format: "{rarity_color}[{rarity}]§r "

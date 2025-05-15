@@ -35,7 +35,7 @@ class AronistEnchant extends WeaponEnchant
     : void
     {
         if ($victim instanceof Player && $attacker instanceof Player) {
-            $chance = $this->calculateChance($enchantmentLevel, $this->getMaxLevel(), 5);
+            $chance = $this->getChance($enchantmentLevel, $this->getMaxLevel());
             if (random_int(1, 100) <= $chance) {
                 while ($attacker->isOnFire()) {
                     $additionalDamage = $enchantmentLevel * 1.5;

@@ -24,12 +24,12 @@ class DrillEnchant extends ToolEnchant
         }
 
         $level = $item->getEnchantment($this)->getLevel();
-        $chance = $this->calculateChance($level, $this->getMaxLevel(), 10);
+        $chance = $this->getChance($level, $this->getMaxLevel());
 
         if (random_int(1, 100) <= $chance) {
-            $breakFace = self::$lastBreakFace[$player->getName()] ?? Facing::UP; //Default UP?
+            $breakFace = self::$lastBreakFace[$player->getName()] ?? Facing::UP;
 
-            for ($i = 0; $i <= $level; $i++) {
+            for ($i = 0; $i <= min($level - 1, 1); $i++) {
                 $currentBlock = $block->getSide(Facing::opposite($breakFace), $i);
 
                 $faceLeft = Facing::rotate($breakFace, Facing::axis($breakFace) !== Axis::Y ? Axis::Y : Axis::X, true);

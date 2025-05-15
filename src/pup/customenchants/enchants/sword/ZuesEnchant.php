@@ -39,7 +39,7 @@ class ZuesEnchant extends WeaponEnchant
     : void
     {
         if ($victim instanceof Player && $attacker instanceof Player) {
-            $chance = $this->calculateChance($enchantmentLevel, $this->getMaxLevel(), 5);
+            $chance = $this->getChance($enchantmentLevel, $this->getMaxLevel());
             if (random_int(1, 100) <= $chance) {
                 self::lightning($victim);
                 $victim->setHealth($victim->getHealth() - ($enchantmentLevel * 2));

@@ -2,7 +2,7 @@
   "feed": {
     "enabled": true,
     "display_name": "Feed",
-    "description": "",
+    "description": "Replenishes hunger when mining.",
     "rarity": "EPIC",
     "max_level": 1,
     "has_chance": false
@@ -10,7 +10,7 @@
   "drill": {
     "enabled": true,
     "display_name": "Drill",
-    "description": "",
+    "description": "Breaks blocks in a radius.",
     "rarity": "UNCOMMON",
     "max_level": 5,
     "has_chance": true,
@@ -23,5 +23,90 @@
     "rarity": "COMMON",
     "max_level": 3,
     "has_chance": false
+  },
+  "speed": {
+    "enabled": true,
+    "display_name": "Speed",
+    "description": "Increases movement speed while mining",
+    "rarity": "UNCOMMON",
+    "max_level": 3,
+    "has_chance": true,
+    "chance": 0.1
+  },
+  "teleport": {
+    "enabled": true,
+    "display_name": "Teleport",
+    "description": "Teleports you on hit.",
+    "rarity": "RARE",
+    "max_level": 1,
+    "has_chance": false
+  },
+  "bunny": {
+    "enabled": true,
+    "display_name": "Bunny",
+    "description": "Provides jump boost.",
+    "rarity": "UNCOMMON",
+    "max_level": 3,
+    "has_chance": false
+  },
+  "gears": {
+    "enabled": true,
+    "display_name": "Gears",
+    "description": "Provides speed boost.",
+    "rarity": "UNCOMMON",
+    "max_level": 3,
+    "has_chance": false
+  },
+  "glowing": {
+    "enabled": true,
+    "display_name": "Glowing",
+    "description": "Grants night vision.",
+    "rarity": "COMMON",
+    "max_level": 1,
+    "has_chance": false
+  },
+  "overload": {
+    "enabled": true,
+    "display_name": "Overload",
+    "description": "Increases max health.",
+    "rarity": "RARE",
+    "max_level": 3,
+    "has_chance": false
+  },
+  "aronsit": {
+    "enabled": true,
+    "display_name": "Aronsit",
+    "description": "Deals extra damage while enemy is on fire",
+    "rarity": "RARE",
+    "max_level": 3,
+    "has_chance": true,
+    "chance": 0.1
+  },
+  "blind": {
+    "enabled": true,
+    "display_name": "Blind",
+    "description": "Applies blindness to enemies.",
+    "rarity": "RARE",
+    "max_level": 3,
+    "has_chance": true,
+    "chance": 0.1
+  },
+  "daze": {
+    "enabled": true,
+    "display_name": "Daze",
+    "description": "Applies confusion to enemies.",
+    "rarity": "RARE",
+    "max_level": 3,
+    "has_chance": true,
+    "chance": 0.1
+  },
+  "zues": {
+    "enabled": true,
+    "display_name": "Zues",
+    "description": "Strikes enemies with lightning.",
+    "rarity": "EPIC",
+    "max_level": 1,
+    "has_chance": true,
+    "chance": 0.05
   }
 }

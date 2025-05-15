@@ -16,7 +16,7 @@ class GlowingEnchant extends ToggledArmorEnchant
     public function onEquip(Player $player, Item $item)
     : void
     {
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::NIGHT_VISION(), PHP_INT_MAX, $item->getEnchantment($this)->getLevel()));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::NIGHT_VISION(), 2147483647, $item->getEnchantment($this)->getLevel()));
     }
 
     public function onDequip(Player $player, Item $item)
