@@ -19,6 +19,6 @@ class SpeedEnchant extends ToolEnchant
     {
         $level = $item->getEnchantment($this)->getLevel();
 
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 255, $level));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 255, min($level - 1, 1)));
     }
 }

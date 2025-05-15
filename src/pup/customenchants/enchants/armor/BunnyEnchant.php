@@ -16,7 +16,7 @@ class BunnyEnchant extends ToggledArmorEnchant
     public function onEquip(Player $player, Item $item)
     : void
     {
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), PHP_INT_MAX, $item->getEnchantment($this)->getLevel()));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 2147483647, min($item->getEnchantment($this)->getLevel() - 1, 1)));
     }
 
     public function onDequip(Player $player, Item $item)

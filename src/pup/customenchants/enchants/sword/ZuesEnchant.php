@@ -6,18 +6,16 @@ namespace pup\customenchants\enchants\sword;
 
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
-use pocketmine\item\enchantment\MeleeWeaponEnchantment;
 use pocketmine\network\mcpe\NetworkBroadcastUtils;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\protocol\types\entity\PropertySyncData;
 use pocketmine\player\Player;
 use pocketmine\world\particle\BlockBreakParticle;
-use pup\customenchants\types\ChanceTriat;
+use pup\customenchants\types\WeaponEnchant;
 
-class ZuesEnchant extends MeleeWeaponEnchantment
+class ZuesEnchant extends WeaponEnchant
 {
-    use ChanceTriat;
 
     /**
      * @inheritDoc
@@ -41,7 +39,7 @@ class ZuesEnchant extends MeleeWeaponEnchantment
     : void
     {
         if ($victim instanceof Player && $attacker instanceof Player) {
-            $chance = $this->calculateChance($enchantmentLevel, $this->getMaxLevel(), 5);
+            $chance = $this->getChance($enchantmentLevel, $this->getMaxLevel());
             if (random_int(1, 100) <= $chance) {
                 self::lightning($victim);
                 $victim->setHealth($victim->getHealth() - ($enchantmentLevel * 2));

@@ -6,11 +6,11 @@ namespace pup\customenchants\types;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\inventory\CallbackInventoryListener;
 use pocketmine\inventory\Inventory;
-use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
+use pup\customenchants\CustomEnchant;
 
-abstract class ToggledArmorEnchant extends Enchantment
+abstract class ToggledArmorEnchant extends CustomEnchant
 {
     public static array $armorListeners = [];
 

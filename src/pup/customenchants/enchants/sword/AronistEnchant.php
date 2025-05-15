@@ -7,15 +7,12 @@ namespace pup\customenchants\enchants\sword;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\item\enchantment\MeleeWeaponEnchantment;
 use pocketmine\player\Player;
 use pocketmine\world\particle\FlameParticle;
-use pup\customenchants\types\ChanceTriat;
+use pup\customenchants\types\WeaponEnchant;
 
-class AronistEnchant extends MeleeWeaponEnchantment
+class AronistEnchant extends WeaponEnchant
 {
-    use ChanceTriat;
-
     /**
      * @inheritDoc
      */
@@ -38,7 +35,7 @@ class AronistEnchant extends MeleeWeaponEnchantment
     : void
     {
         if ($victim instanceof Player && $attacker instanceof Player) {
-            $chance = $this->calculateChance($enchantmentLevel, $this->getMaxLevel(), 5);
+            $chance = $this->getChance($enchantmentLevel, $this->getMaxLevel());
             if (random_int(1, 100) <= $chance) {
                 while ($attacker->isOnFire()) {
                     $additionalDamage = $enchantmentLevel * 1.5;

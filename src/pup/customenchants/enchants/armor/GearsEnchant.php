@@ -16,7 +16,7 @@ class GearsEnchant extends ToggledArmorEnchant
     public function onEquip(Player $player, Item $item)
     : void
     {
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), PHP_INT_MAX, $item->getEnchantment($this)->getLevel()));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 2147483647, min($item->getEnchantment($this)->getLevel() - 1, 1)));
     }
 
     public function onDequip(Player $player, Item $item)

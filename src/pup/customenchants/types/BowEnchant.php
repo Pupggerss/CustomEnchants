@@ -7,14 +7,12 @@ namespace pup\customenchants\types;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
-use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
+use pup\customenchants\CustomEnchant;
 
-abstract class BowEnchant extends Enchantment
+abstract class BowEnchant extends CustomEnchant
 {
-    use ChanceTriat;
-
     public static function onShoot(EntityShootBowEvent $event)
     : void
     {

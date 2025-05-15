@@ -19,6 +19,6 @@ class HasteEnchant extends ToolEnchant
     {
         $level = $item->getEnchantment($this)->getLevel();
 
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::HASTE(), 255, $level));
+        $player->getEffects()->add(new EffectInstance(VanillaEffects::HASTE(), 255, min($level - 1, 1)));
     }
 }
