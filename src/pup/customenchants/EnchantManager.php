@@ -113,29 +113,47 @@ final class EnchantManager
         return $enchant;
     }
 
-    public static function loreItem(Item $item)
-    : Item
-    {
-        //TODO: Config lore customization
+    public static function loreItem(Item $item): Item {
         if (!is_null($item->getNamedTag()->getTag("hideEnchantments"))) {
             return $item;
         }
 
+        $config = Main::getInstance()->getConfig();
+
         $enchantLore = [];
         foreach ($item->getEnchantments() as $enchantmentInstance) {
             $enchantment = $enchantmentInstance->getType();
-            if(!$enchantment instanceof CustomEnchant){
+            if (!$enchantment instanceof CustomEnchant) {
                 continue;
             }
+
             $rarity = $enchantment->getRarity();
             $color = Rarity::getColor($rarity);
+            if($config->get("enchant_lore.roman_numerals", true)){
+                $level = self::intToRoman($enchantmentInstance->getLevel());
+            } else {
+                $level = $enchantmentInstance->getLevel();
+            }
 
-            $enchantLore[" §r§8» §r" . $color . $enchantment->getName() . " " . self::intToRoman($enchantmentInstance->getLevel())] = $rarity;
+            $formattedEntry = str_replace(
+                ['{color}', '{name}', '{level}'],
+                [$color, $enchantment->getName(), $level],
+                $config->get("enchant_lore.entry_format", " §r§8» §r{color}{name} {level}")
+            );
+
+            $enchantLore[$formattedEntry] = $rarity;
         }
-        asort($enchantLore);
-        $lore = ["§r§dEnchantments:"];
-        $lore = array_merge($lore, array_keys($enchantLore));
-        $item->setLore($lore);
+
+        if (!empty($enchantLore)) {
+            if ($config->get("enchant_lore.sort_by_rarity", true)) {
+                asort($enchantLore);
+            }
+
+            $lore = [$config->get("enchant_lore.header", "§r§dEnchantments:")];
+            $lore = array_merge($lore, array_keys($enchantLore));
+            $item->setLore($lore);
+        }
+
         return $item;
     }
 
