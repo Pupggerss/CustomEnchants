@@ -8,8 +8,6 @@ use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase
 {
-    //TODO: rewrite ce system & introduce configing
-
     private static self $instance;
 
     public static function getInstance()
@@ -27,8 +25,8 @@ class Main extends PluginBase
     public function onEnable()
     : void
     {
-        $this->saveResource("max_levels.json");
-
+        $this->saveResource("enchantments.json");
+        Rarity::init($this->getConfig()->get("rarities"));
         $this->getServer()->getPluginManager()->registerEvents(new EnchantListener(), $this);
         $this->getServer()->getCommandMap()->register("CustomEnchants", new EnchanterComand());
 

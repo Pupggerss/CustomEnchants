@@ -7,11 +7,11 @@ namespace pup\customenchants\enchants\sword;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\item\enchantment\MeleeWeaponEnchantment;
 use pocketmine\player\Player;
 use pocketmine\world\particle\FlameParticle;
+use pup\customenchants\types\WeaponEnchant;
 
-class AronistEnchant extends MeleeWeaponEnchantment
+class AronistEnchant extends WeaponEnchant
 {
     /**
      * @inheritDoc

@@ -5,18 +5,19 @@ namespace pup\customenchants;
 
 
 use pocketmine\data\bedrock\EnchantmentIdMap;
+use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\ItemFlags;
-use pocketmine\item\enchantment\Rarity;
 use pocketmine\item\Item;
 use pup\customenchants\enchants\armor\{BunnyEnchant, GearsEnchant, GlowingEnchant, OverloadEnchant};
 use pup\customenchants\enchants\sword\{AronistEnchant, BlindEnchant, DazeEnchant, ZuesEnchant};
 use pup\customenchants\enchants\bow\TeleportEnchant;
 use pup\customenchants\enchants\tools\hoe\SpeedEnchant;
 use pup\customenchants\enchants\tools\pickaxe\{DrillEnchant, FeedEnchant, HasteEnchant};
+use RuntimeException;
 
 final class EnchantManager
 {
-    public const ID = [
+    public const IDS = [
         //Start this at 1k cus wtf bedrock!
         'feed'     => 1000,
         'haste'    => 1001,
@@ -32,43 +33,67 @@ final class EnchantManager
         'gears'    => 1011,
         'bunny'    => 1012
     ];
-    public const RARITY_TO_COLOR = [
-        Rarity::COMMON   => "§a",
-        Rarity::UNCOMMON => "§2",
-        Rarity::RARE     => "§6",
-        Rarity::MYTHIC   => "§4",
-    ];
-    private array $max_levels;
+    private array $enchant_data;
 
     public function __construct()
     {
-        $this->max_levels = json_decode(file_get_contents(Main::getInstance()->getDataFolder() . "max_levels.json"), true);
+        $this->enchant_data = json_decode(file_get_contents(Main::getInstance()->getDataFolder() . "enchantments.json"), true);
         $this->initEnchants();
     }
 
-    public function initEnchants()
+    public function initEnchants(): void
     {
-        $ces = [
-            self::ID['feed']     => new FeedEnchant("Feed", Rarity::UNCOMMON, ItemFlags::PICKAXE, ItemFlags::NONE, $this->max_levels['tool_levels']['feed']),
-            self::ID['haste']    => new HasteEnchant("Haste", Rarity::COMMON, ItemFlags::PICKAXE, ItemFlags::AXE, $this->max_levels['tool_levels']['haste']),
-            self::ID['drill']    => new DrillEnchant("Drill", Rarity::COMMON, ItemFlags::PICKAXE, ItemFlags::NONE, $this->max_levels['tool_levels']['drill']),
-            self::ID['speed']    => new SpeedEnchant("Speed", Rarity::COMMON, ItemFlags::HOE, ItemFlags::NONE, $this->max_levels['tool_levels']['speed']),
-            self::ID['zues']     => new ZuesEnchant("Zues", Rarity::RARE, ItemFlags::SWORD, ItemFlags::AXE, $this->max_levels['sword_levels']['zues']),
-            self::ID['daze']     => new DazeEnchant("Daze", Rarity::COMMON, ItemFlags::SWORD, ItemFlags::AXE, $this->max_levels['sword_levels']['daze']),
-            self::ID['blind']    => new BlindEnchant("Blind", Rarity::COMMON, ItemFlags::SWORD, ItemFlags::AXE, $this->max_levels['sword_levels']['blind']),
-            self::ID['aronist']  => new AronistEnchant("Aronist", Rarity::UNCOMMON, ItemFlags::SWORD, ItemFlags::NONE, $this->max_levels['sword_levels']['aronist']),
-            self::ID['overload'] => new OverloadEnchant("Overload", Rarity::RARE, ItemFlags::ARMOR, ItemFlags::NONE, $this->max_levels['armor_levels']['overload']),
-            self::ID['glowing']  => new GlowingEnchant("Glowing", Rarity::UNCOMMON, ItemFlags::HEAD, ItemFlags::NONE, $this->max_levels['armor_levels']['glowing']),
-            self::ID['gears']    => new GearsEnchant("Gears", Rarity::COMMON, ItemFlags::FEET, ItemFlags::NONE, $this->max_levels['armor_levels']['gears']),
-            self::ID['bunny']    => new BunnyEnchant("Bunny", Rarity::UNCOMMON, ItemFlags::FEET, ItemFlags::NONE, $this->max_levels['armor_levels']['bunny']),
-            self::ID['teleport'] => new TeleportEnchant("Teleport", Rarity::UNCOMMON, "Teleport", 1, ItemFlags::BOW)
-        ];
-
-        foreach ($ces as $id => $enchant) {
-            EnchantmentIdMap::getInstance()->register($id, $enchant);
+        foreach (self::IDS as $name => $id) {
+            try {
+                if ($enchant = $this->createConfiguredEnchant($name)) {
+                    EnchantmentIdMap::getInstance()->register($id, $enchant);
+                }
+            } catch (RuntimeException $e) {
+                Main::getInstance()->getLogger()->error($e->getMessage());
+            }
         }
     }
 
+    private function createConfiguredEnchant(string $name): ?CustomEnchant
+    {
+        $data = $this->enchant_data[$name] ?? null;
+        if (!$data || !($data['enabled'] ?? true)) return null;
+
+        $enchant = match ($name) {
+            'feed' => new FeedEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::PICKAXE,
+            ),
+            'drill' => new DrillEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::PICKAXE
+            ),
+            'haste' => new HasteEnchant(
+                $data['display_name'],
+                Rarity::fromName($data['rarity']),
+                $data['description'],
+                $data['max_level'],
+                ItemFlags::PICKAXE
+            ),
+            default => throw new RuntimeException("Unknown enchant type: $name")
+        };
+
+        if ($data['has_chance'] ?? false) {
+            $enchant->setBaseChance($data['base_chance'] ?? 0.1);
+        }
+
+        return $enchant;
+    }
+
+    /*
+     * @deprecated
+     */
     public static function loreItem(Item $item)
     : Item
     {
@@ -80,10 +105,9 @@ final class EnchantManager
         foreach ($item->getEnchantments() as $enchantmentInstance) {
             $enchantment = $enchantmentInstance->getType();
             $rarity = $enchantment->getRarity();
-            $name = $enchantment->getName()->getText(); //should fix enchantment.unbreaking
-            $level = $item->getEnchantmentLevel($enchantment);
+            $color = Rarity::getColor($rarity);
 
-            $enchantLore[" §r§8» §r" . self::RARITY_TO_COLOR[$rarity] . $name . " " . self::intToRoman($level)] = $rarity;
+            $enchantLore[" §r§8» §r" . $color . $enchantment->getName() . " " . self::intToRoman($enchantmentInstance->getLevel())] = $rarity;
         }
         asort($enchantLore);
         $lore = ["§r§dEnchantments:"];
@@ -106,5 +130,11 @@ final class EnchantManager
             }
         }
         return $returnValue;
+    }
+
+    private function getRarity(string $enchantName): int
+    {
+        $rarityName = $this->enchantConfig[$enchantName]['rarity'] ?? 'COMMON';
+        return Rarity::fromName($rarityName);
     }
 }

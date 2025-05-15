@@ -32,17 +32,17 @@ class EnchanterComand extends Command
             }
             $enchant = $args[0];
             if (is_numeric($enchant)) {
-                $flip = array_flip(EnchantManager::ID);
+                $flip = array_flip(EnchantManager::IDS);
                 if (!isset($flip[$enchant])) {
                     $sender->sendMessage(TextFormat::RED . "There is no enchant with that id.");
                     return;
                 }
             } else {
-                if (!isset(EnchantManager::ID[$enchant])) {
+                if (!isset(EnchantManager::IDS[$enchant])) {
                     $sender->sendMessage(TextFormat::RED . "There is no enchant with that name.");
                     return;
                 }
-                $enchant = EnchantManager::ID[$enchant];
+                $enchant = EnchantManager::IDS[$enchant];
             }
             $enchant = EnchantmentIdMap::getInstance()->fromId($enchant);
             $item = $sender->getInventory()->getItemInHand();

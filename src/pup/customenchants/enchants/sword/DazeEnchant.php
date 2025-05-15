@@ -8,10 +8,10 @@ use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
-use pocketmine\item\enchantment\MeleeWeaponEnchantment;
 use pocketmine\player\Player;
+use pup\customenchants\types\WeaponEnchant;
 
-class DazeEnchant extends MeleeWeaponEnchantment
+class DazeEnchant extends WeaponEnchant
 {
 
     /**

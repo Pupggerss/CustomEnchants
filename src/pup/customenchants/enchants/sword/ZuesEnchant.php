@@ -6,15 +6,15 @@ namespace pup\customenchants\enchants\sword;
 
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
-use pocketmine\item\enchantment\MeleeWeaponEnchantment;
 use pocketmine\network\mcpe\NetworkBroadcastUtils;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\protocol\types\entity\PropertySyncData;
 use pocketmine\player\Player;
 use pocketmine\world\particle\BlockBreakParticle;
+use pup\customenchants\types\WeaponEnchant;
 
-class ZuesEnchant extends MeleeWeaponEnchantment
+class ZuesEnchant extends WeaponEnchant
 {
 
     /**

@@ -1,3 +1,27 @@
 {
-
+  "feed": {
+    "enabled": true,
+    "display_name": "Feed",
+    "description": "",
+    "rarity": "EPIC",
+    "max_level": 1,
+    "has_chance": false
+  },
+  "drill": {
+    "enabled": true,
+    "display_name": "Drill",
+    "description": "",
+    "rarity": "UNCOMMON",
+    "max_level": 5,
+    "has_chance": true,
+    "chance": 0.01
+  },
+  "haste": {
+    "enabled": true,
+    "display_name": "Haste",
+    "description": "Break Blocks Faster",
+    "rarity": "COMMON",
+    "max_level": 3,
+    "has_chance": false
+  }
 }
