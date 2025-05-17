@@ -1,7 +1,7 @@
 <?php
 
 
-namespace pup\customenchants\enchants\armor;
+namespace pup\customenchants\enchants\armor\boots;
 
 
 use pocketmine\entity\effect\EffectInstance;

@@ -5,6 +5,7 @@ namespace pup\customenchants\enchants\tools\pickaxe;
 
 
 use pocketmine\block\Block;
+use pocketmine\event\Event;
 use pocketmine\item\Item;
 use pocketmine\math\Axis;
 use pocketmine\math\Facing;
@@ -16,7 +17,7 @@ class DrillEnchant extends ToolEnchant
     private static array $lastBreakFace = [];
     private bool $breakingBlocks = false;
 
-    public function execute(Player $player, Item $item, Block $block)
+    public function execute(Player $player, Item $item, Block $block, ?Event $event)
     : void
     {
         if ($this->breakingBlocks) {
@@ -55,7 +56,9 @@ class DrillEnchant extends ToolEnchant
 
                 foreach ($blocksToBreak as $b) {
                     $this->breakingBlocks = true;
-                    $player->getWorld()->useBreakOn($b->getPosition(), $item, $player);
+                    if($b->getBreakInfo()->isToolCompatible($item)) {
+                        $player->getWorld()->useBreakOn($b->getPosition(), $item, $player);
+                    }
                 }
 
                 if (!$block->getPosition()->equals($currentBlock->getPosition())) {

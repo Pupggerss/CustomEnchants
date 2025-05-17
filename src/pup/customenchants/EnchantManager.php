@@ -5,19 +5,16 @@ namespace pup\customenchants;
 
 
 use pocketmine\data\bedrock\EnchantmentIdMap;
-use pocketmine\item\Armor;
-use pocketmine\item\Bow;
-use pocketmine\item\enchantment\ItemFlags;
-use pocketmine\item\Item;
-use pup\customenchants\enchants\armor\{BunnyEnchant, GearsEnchant, GlowingEnchant, OverloadEnchant};
+use pocketmine\item\enchantment\ItemFlags; //To be changed
+use pup\customenchants\enchants\armor\{OverloadEnchant, ShuffleEnchant};
+use pup\customenchants\enchants\armor\helmet\{AquaticEnchant, GlowingEnchant};
+use pup\customenchants\enchants\armor\boots\{BunnyEnchant, GearsEnchant, TakeOffEnchant};
 use pup\customenchants\enchants\sword\{AronistEnchant, BlindEnchant, DazeEnchant, ZuesEnchant};
-use pocketmine\item\Pickaxe;
-use pocketmine\item\Sword;
-use pocketmine\item\Tool;
-use pocketmine\item\VanillaItems;
+use pocketmine\item\{Tool, VanillaItems, Pickaxe, Sword, Item, Bow, Armor};
 use pup\customenchants\enchants\bow\TeleportEnchant;
 use pup\customenchants\enchants\tools\hoe\SpeedEnchant;
-use pup\customenchants\enchants\tools\pickaxe\{DrillEnchant, FeedEnchant, HasteEnchant};
+use pup\customenchants\enchants\tools\pickaxe\{AutoSmeltEnchant, DrillEnchant, FeedEnchant, HasteEnchant};
+use pup\customenchants\enchants\tools\RestoreEnchant;
 use pup\customenchants\types\WeaponEnchant;
 use RuntimeException;
 
@@ -38,7 +35,12 @@ final class EnchantManager
         'overload' => 1009,
         'glowing'  => 1010,
         'gears'    => 1011,
-        'bunny'    => 1012
+        'bunny'    => 1012,
+        'restore'  => 1013,
+        'shuffle' =>  1014,
+        'takeoff' =>  1015,
+        'aquatic' =>  1016,
+        'autosmelt' => 1017
     ];
 
     private static array $class_map = [
@@ -55,6 +57,11 @@ final class EnchantManager
         'blind' => ['class' => BlindEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
         'daze' => ['class' => DazeEnchant::class, 'flags' => [ItemFlags::SWORD]],
         'zues' => ['class' => ZuesEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
+        'restore' => ['class' => RestoreEnchant::class, 'flags' => [ItemFlags::DIG, ItemFlags::PICKAXE]],
+        'shuffle' => ['class' => ShuffleEnchant::class, 'flags' => [ItemFlags::ARMOR]],
+        'takeoff' => ['class' => TakeOffEnchant::class, 'flags' => [ItemFlags::FEET]],
+        'aquatic' => ['class' => AquaticEnchant::class, 'flags' => [ItemFlags::HEAD]],
+        'autosmelt' => ['class' => AutoSmeltEnchant::class, 'flags' => [ItemFlags::DIG]]
     ];
 
     private array $enchant_data;
@@ -107,7 +114,7 @@ final class EnchantManager
         $enchant = new $className(...$constructorArgs);
 
         if ($data['has_chance'] ?? false) {
-            $enchant->setBaseChance($data['base_chance'] ?? 0.1);
+            $enchant->setBaseChance($data['chance']);
         }
 
         return $enchant;
@@ -184,7 +191,7 @@ final class EnchantManager
         } elseif($item instanceof Pickaxe) {
             $flags |= ItemFlags::PICKAXE;
         } elseif($item instanceof Tool){
-            $flags |= ItemFlags::TOOL;
+            $flags |= ItemFlags::DIG;
         }
 
         if ($item instanceof Armor) {
