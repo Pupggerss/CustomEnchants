@@ -1,25 +1,26 @@
 <?php
 
 
-namespace pup\customenchants\enchants\tools\hoe;
+namespace pup\customenchants\enchants\tools;
 
 
 use pocketmine\block\Block;
-use pocketmine\entity\effect\EffectInstance;
-use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\Event;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 use pup\customenchants\types\ToolEnchant;
 
-class SpeedEnchant extends ToolEnchant
+class ExperienceEnchant extends ToolEnchant
 {
 
     public function execute(Player $player, Item $item, Block $block, ?Event $event)
     : void
     {
         $level = $item->getEnchantment($this)->getLevel();
+        $chance = $this->getChance($level, $this->getMaxLevel());
 
-        $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 255, min($level - 1, 1)));
+        if(random_int(1, 100) <= $chance){
+            $player->getXpManager()->addXp((random_int(1, 10) * random_int(1, 5)), true);
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace pup\customenchants\types;
 
 use pocketmine\block\Block;
 use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\Event;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 use pup\customenchants\CustomEnchant;
@@ -20,12 +21,12 @@ abstract class ToolEnchant extends CustomEnchant
         $block = $event->getBlock();
         foreach ($item->getEnchantments() as $enchant) {
             if (($enchant = $enchant->getType()) instanceof self) {
-                $enchant->execute($player, $item, $block);
+                $enchant->execute($player, $item, $block, $event);
             }
         }
     }
 
-    abstract public function execute(Player $player, Item $item, Block $block)
+    abstract public function execute(Player $player, Item $item, Block $block, ?Event $event)
     : void;
 
 }

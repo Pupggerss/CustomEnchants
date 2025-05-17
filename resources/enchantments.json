@@ -108,5 +108,56 @@
     "max_level": 1,
     "has_chance": true,
     "chance": 0.05
+  },
+  "restore": {
+    "enabled": true,
+    "display_name": "Restore",
+    "description": "Upon breaking, item has a chance to lose this enchantment and repair half of its durability",
+    "rarity": "EPIC",
+    "max_level": 1,
+    "has_chance": false
+  },
+  "shuffle": {
+    "enabled": true,
+    "display_name": "Shuffle",
+    "description": "Shuffles opponent's inventory",
+    "rarity": "UNCOMMON",
+    "max_level": 3,
+    "has_chance": true,
+    "chance": 0.1
+  },
+  "takeoff": {
+    "enabled": true,
+    "display_name": "Take Off",
+    "description": "Allows flight",
+    "rarity": "LEGENDARY",
+    "max_level": 1,
+    "has_chance": false
+  },
+  "aquatic": {
+    "enabled": true,
+    "display_name": "Aquatic",
+    "description": "Grants Water Breathing",
+    "rarity": "COMMON",
+    "max_level": 1,
+    "has_chance": false
+  },
+  "autosmelt": {
+    "enabled": true,
+    "display_name": "AutoSmelt",
+    "description": "Automatically smelt block drops",
+    "rarity": "COMMON",
+    "max_level": 3,
+    "has_chance": true,
+    "chance": 1
+  },
+  "experience": {
+    "enabled": true,
+    "display_name": "Experience",
+    "description": "Receive random amount of xp from mining blocks",
+    "rarity": "UNCOMMON",
+    "max_level": 5,
+    "has_chance": true,
+    "chance": 0.001
   }
 }
