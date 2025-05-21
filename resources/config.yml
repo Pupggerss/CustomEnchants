@@ -48,3 +48,12 @@ messages:
   proc_messages:
     enabled: true
     format: "§e{enchant_name} §fhas activated! (Level: {level})"
+# =======================
+#      SETTINGS
+# =======================
+max_level: true #Caps /enchanter enchanting at the max level
+enchant_lore:
+  header: "§r§dEnchantments: "  # The header line
+  entry_format: " §r§8» §r{color}{name} {level}"  # Format for each enchant
+  sort_by_rarity: true  # Whether to sort enchants by rarity
+  roman_numerals: = true # Whether to enable roman numerals as level showcase
