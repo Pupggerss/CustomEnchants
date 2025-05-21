@@ -8,11 +8,11 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\item\enchantment\ItemFlags;
 use pocketmine\item\enchantment\MeleeWeaponEnchantment;
-use pup\customenchants\ChanceTriat;
+use pup\customenchants\utils\ChanceTrait;
 
 abstract class WeaponEnchant extends MeleeWeaponEnchantment
 {
-    use ChanceTriat;
+    use ChanceTrait;
 
 
     //Best way to do this while still using MeleeWeapon class?

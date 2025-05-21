@@ -4,6 +4,7 @@
 namespace pup\customenchants;
 
 use pocketmine\plugin\PluginBase;
+use pup\customenchants\utils\Rarity;
 
 
 class Main extends PluginBase

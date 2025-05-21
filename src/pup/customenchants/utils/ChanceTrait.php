@@ -1,10 +1,8 @@
 <?php
 
+namespace pup\customenchants\utils;
 
-namespace pup\customenchants;
-
-
-trait ChanceTriat
+trait ChanceTrait
 {
     private float $baseChance = 0.1;
 

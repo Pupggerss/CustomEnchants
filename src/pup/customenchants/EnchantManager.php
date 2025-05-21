@@ -16,6 +16,7 @@ use pup\customenchants\enchants\tools\hoe\SpeedEnchant;
 use pup\customenchants\enchants\tools\pickaxe\{AutoSmeltEnchant, DrillEnchant, FeedEnchant, HasteEnchant};
 use pup\customenchants\enchants\tools\RestoreEnchant;
 use pup\customenchants\types\WeaponEnchant;
+use pup\customenchants\utils\Rarity;
 use RuntimeException;
 
 final class EnchantManager

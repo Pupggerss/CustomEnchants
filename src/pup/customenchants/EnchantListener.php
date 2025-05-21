@@ -61,6 +61,11 @@ class EnchantListener implements Listener
         BowEnchant::onHitBlock($event);
     }
 
+    /**
+     * @param PlayerJoinEvent $event
+     * @priority HIGHEST
+     */
+
     public function onJoin(PlayerJoinEvent $event)
     : void
     {
@@ -75,6 +80,10 @@ class EnchantListener implements Listener
         }
     }
 
+    /**
+     * @param PlayerDeathEvent $event
+     * @priority HIGHEST
+     */
     public function onDeath(PlayerDeathEvent $event)
     : void
     {

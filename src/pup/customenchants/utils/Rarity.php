@@ -1,6 +1,6 @@
 <?php
 
-namespace pup\customenchants;
+namespace pup\customenchants\utils;
 
 final class Rarity
 {

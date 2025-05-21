@@ -6,10 +6,12 @@ namespace pup\customenchants;
 
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\ItemFlags;
+use pup\customenchants\utils\ChanceTrait;
+
 
 class CustomEnchant extends Enchantment
 {
-    use ChanceTriat;
+    use ChanceTrait;
 
     private string $description;
 
