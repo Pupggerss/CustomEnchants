@@ -7,13 +7,17 @@ namespace pup\customenchants;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\data\bedrock\EnchantmentIdMap;
+use pocketmine\item\Durable;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\Item;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class EnchanterComand extends Command
 {
+    //TODO: REDO AND MAKE THIS BETTER LMAO
     public function __construct()
     {
         parent::__construct("enchanter", "Adds an enchant to the item in hand", "/enchanter", ["ce"]);
@@ -67,14 +71,9 @@ class EnchanterComand extends Command
         }
 
         $level = (int)abs($level);
-
-        $config = Main::getInstance()->getConfig();
-        $maxlevel = $config->get("max_level", true);
-        if($maxlevel) {
-            if ($level > $enchant->getMaxLevel()) {
-                $sender->sendMessage(TextFormat::RED . "Provided level is greater than max level!");
-                return;
-            }
+        if($level > $enchant->getMaxLevel()) {
+            $sender->sendMessage(TextFormat::RED . "Provided level is greater than max level!");
+            return;
         }
         $check = EnchantManager::canApplyEnchant($enchant->getName(), $item);
 
