@@ -5,22 +5,25 @@ namespace pup\customenchants;
 
 
 use pocketmine\data\bedrock\EnchantmentIdMap;
-use pocketmine\item\enchantment\ItemFlags; //To be changed
-use pup\customenchants\enchants\armor\{OverloadEnchant, ShuffleEnchant};
-use pup\customenchants\enchants\armor\helmet\{AquaticEnchant, GlowingEnchant};
-use pup\customenchants\enchants\armor\boots\{BunnyEnchant, GearsEnchant, TakeOffEnchant};
+use pocketmine\item\Armor;
+use pocketmine\item\Bow;
+use pocketmine\item\enchantment\ItemFlags;
+use pocketmine\item\Item;
+use pup\customenchants\enchants\armor\{BunnyEnchant, GearsEnchant, GlowingEnchant, OverloadEnchant};
 use pup\customenchants\enchants\sword\{AronistEnchant, BlindEnchant, DazeEnchant, ZuesEnchant};
-use pocketmine\item\{Axe, Hoe, Shovel, Tool, VanillaItems, Pickaxe, Sword, Item, Bow, Armor};
+use pocketmine\item\Pickaxe;
+use pocketmine\item\Sword;
+use pocketmine\item\Tool;
+use pocketmine\item\VanillaItems;
 use pup\customenchants\enchants\bow\TeleportEnchant;
 use pup\customenchants\enchants\tools\hoe\SpeedEnchant;
-use pup\customenchants\enchants\tools\pickaxe\{AutoSmeltEnchant, DrillEnchant, FeedEnchant, HasteEnchant};
-use pup\customenchants\enchants\tools\RestoreEnchant;
+use pup\customenchants\enchants\tools\pickaxe\{DrillEnchant, FeedEnchant, HasteEnchant};
 use pup\customenchants\types\WeaponEnchant;
-use pup\customenchants\utils\Rarity;
 use RuntimeException;
+
 final class EnchantManager
 {
-    public const array IDS = [
+    public const IDS = [
         //Start this at 1k cus wtf bedrock!
         //Seems 1k is too much?
         'feed'     => 1000,
@@ -35,12 +38,7 @@ final class EnchantManager
         'overload' => 1009,
         'glowing'  => 1010,
         'gears'    => 1011,
-        'bunny'    => 1012,
-        'restore'  => 1013,
-        'shuffle' =>  1014,
-        'takeoff' =>  1015,
-        'aquatic' =>  1016,
-        'autosmelt' => 1017
+        'bunny'    => 1012
     ];
 
     private static array $class_map = [
@@ -57,11 +55,6 @@ final class EnchantManager
         'blind' => ['class' => BlindEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
         'daze' => ['class' => DazeEnchant::class, 'flags' => [ItemFlags::SWORD]],
         'zues' => ['class' => ZuesEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
-        'restore' => ['class' => RestoreEnchant::class, 'flags' => [ItemFlags::DIG, ItemFlags::PICKAXE]],
-        'shuffle' => ['class' => ShuffleEnchant::class, 'flags' => [ItemFlags::ARMOR]],
-        'takeoff' => ['class' => TakeOffEnchant::class, 'flags' => [ItemFlags::FEET]],
-        'aquatic' => ['class' => AquaticEnchant::class, 'flags' => [ItemFlags::HEAD]],
-        'autosmelt' => ['class' => AutoSmeltEnchant::class, 'flags' => [ItemFlags::DIG]]
     ];
 
     private array $enchant_data;
@@ -114,53 +107,35 @@ final class EnchantManager
         $enchant = new $className(...$constructorArgs);
 
         if ($data['has_chance'] ?? false) {
-            $enchant->setBaseChance($data['chance']);
+            $enchant->setBaseChance($data['base_chance'] ?? 0.1);
         }
 
         return $enchant;
     }
 
-    public static function loreItem(Item $item): Item {
+    public static function loreItem(Item $item)
+    : Item
+    {
+        //TODO: Config lore customization
         if (!is_null($item->getNamedTag()->getTag("hideEnchantments"))) {
             return $item;
         }
 
-        $config = Main::getInstance()->getConfig();
-
         $enchantLore = [];
         foreach ($item->getEnchantments() as $enchantmentInstance) {
             $enchantment = $enchantmentInstance->getType();
-            if (!$enchantment instanceof CustomEnchant) {
+            if(!$enchantment instanceof CustomEnchant){
                 continue;
             }
-
             $rarity = $enchantment->getRarity();
             $color = Rarity::getColor($rarity);
-            if($config->get("enchant_lore.roman_numerals", true)){
-                $level = self::intToRoman($enchantmentInstance->getLevel());
-            } else {
-                $level = $enchantmentInstance->getLevel();
-            }
 
-            $formattedEntry = str_replace(
-                ['{color}', '{name}', '{level}'],
-                [$color, $enchantment->getName(), $level],
-                $config->get("enchant_lore.entry_format", " §r§8» §r{color}{name} {level}")
-            );
-
-            $enchantLore[$formattedEntry] = $rarity;
+            $enchantLore[" §r§8» §r" . $color . $enchantment->getName() . " " . self::intToRoman($enchantmentInstance->getLevel())] = $rarity;
         }
-
-        if (!empty($enchantLore)) {
-            if ($config->get("enchant_lore.sort_by_rarity", true)) {
-                asort($enchantLore);
-            }
-
-            $lore = [$config->get("enchant_lore.header", "§r§dEnchantments:")];
-            $lore = array_merge($lore, array_keys($enchantLore));
-            $item->setLore($lore);
-        }
-
+        asort($enchantLore);
+        $lore = ["§r§dEnchantments:"];
+        $lore = array_merge($lore, array_keys($enchantLore));
+        $item->setLore($lore);
         return $item;
     }
 
@@ -180,82 +155,72 @@ final class EnchantManager
         return $returnValue;
     }
 
-    private static function getItemTypeFlags(Item $item) : int {
+    private static function getItemTypeFlags(Item $item, bool $specifyId = true) : int
+    {
+        $flags = 0;
+
         if($item instanceof Sword) {
-            return ItemFlags::SWORD;
-        }
-        if($item instanceof Bow) {
-            return ItemFlags::BOW;
-        }
-        if($item instanceof Pickaxe) {
-            return ItemFlags::PICKAXE;
-        }
-        if($item instanceof Axe) {
-            return ItemFlags::AXE;
-        }
-        if($item instanceof Shovel) {
-            return ItemFlags::SHOVEL;
-        }
-        if($item instanceof Hoe) {
-            return ItemFlags::HOE;
-        }
-        if($item instanceof Tool) {
-            return ItemFlags::DIG;
+            $flags |= ItemFlags::SWORD;
+        } elseif($item instanceof Bow) {
+            $flags |= ItemFlags::BOW;
+        } elseif($item instanceof Pickaxe) {
+            $flags |= ItemFlags::PICKAXE;
+        } elseif($item instanceof Tool){
+            $flags |= ItemFlags::TOOL;
         }
 
         if ($item instanceof Armor) {
-                $itemTypeId = $item->getTypeId();
-                // Helmets
-                if(in_array($itemTypeId, [
-                    VanillaItems::LEATHER_CAP()->getTypeId(),
-                    VanillaItems::GOLDEN_HELMET()->getTypeId(),
-                    VanillaItems::CHAINMAIL_HELMET()->getTypeId(),
-                    VanillaItems::IRON_HELMET()->getTypeId(),
-                    VanillaItems::DIAMOND_HELMET()->getTypeId(),
-                    VanillaItems::NETHERITE_HELMET()->getTypeId()
-                ])) {
-                    return ItemFlags::HEAD;
-                }
-                // Chestplates
-                if(in_array($itemTypeId, [
-                    VanillaItems::LEATHER_TUNIC()->getTypeId(),
-                    VanillaItems::GOLDEN_CHESTPLATE()->getTypeId(),
-                    VanillaItems::CHAINMAIL_CHESTPLATE()->getTypeId(),
-                    VanillaItems::IRON_CHESTPLATE()->getTypeId(),
-                    VanillaItems::DIAMOND_CHESTPLATE()->getTypeId(),
-                    VanillaItems::NETHERITE_CHESTPLATE()->getTypeId()
-                ])) {
-                    return ItemFlags::TORSO;
-                }
-                // Leggings
-                if(in_array($itemTypeId, [
-                    VanillaItems::LEATHER_PANTS()->getTypeId(),
-                    VanillaItems::GOLDEN_LEGGINGS()->getTypeId(),
-                    VanillaItems::CHAINMAIL_LEGGINGS()->getTypeId(),
-                    VanillaItems::IRON_LEGGINGS()->getTypeId(),
-                    VanillaItems::DIAMOND_LEGGINGS()->getTypeId(),
-                    VanillaItems::NETHERITE_LEGGINGS()->getTypeId()
-                ])) {
-                    return ItemFlags::LEGS;
-                }
-                // Boots
-                if(in_array($itemTypeId, [
-                    VanillaItems::LEATHER_BOOTS()->getTypeId(),
-                    VanillaItems::GOLDEN_BOOTS()->getTypeId(),
-                    VanillaItems::CHAINMAIL_BOOTS()->getTypeId(),
-                    VanillaItems::IRON_BOOTS()->getTypeId(),
-                    VanillaItems::DIAMOND_BOOTS()->getTypeId(),
-                    VanillaItems::NETHERITE_BOOTS()->getTypeId()
-                ])) {
-                    return ItemFlags::FEET;
-                }
+            $flags |= ItemFlags::ARMOR;
         }
-
-        return ItemFlags::NONE;
+        if($specifyId){
+            $itemTypeId = $item->getTypeId();
+            if(in_array($itemTypeId, [
+                VanillaItems::LEATHER_CAP()->getTypeId(),
+                VanillaItems::GOLDEN_HELMET()->getTypeId(),
+                VanillaItems::CHAINMAIL_HELMET()->getTypeId(),
+                VanillaItems::IRON_HELMET()->getTypeId(),
+                VanillaItems::DIAMOND_HELMET()->getTypeId(),
+                VanillaItems::NETHERITE_HELMET()->getTypeId()
+            ])) {
+                $flags |= ItemFlags::HEAD;
+            }
+            if(in_array($itemTypeId, [
+                VanillaItems::LEATHER_TUNIC()->getTypeId(),
+                VanillaItems::GOLDEN_CHESTPLATE()->getTypeId(),
+                VanillaItems::CHAINMAIL_CHESTPLATE()->getTypeId(),
+                VanillaItems::IRON_CHESTPLATE()->getTypeId(),
+                VanillaItems::DIAMOND_CHESTPLATE()->getTypeId(),
+                VanillaItems::NETHERITE_CHESTPLATE()->getTypeId()
+            ])) {
+                $flags |= ItemFlags::TORSO;
+            }
+            if(in_array($itemTypeId, [
+                VanillaItems::LEATHER_PANTS()->getTypeId(),
+                VanillaItems::GOLDEN_LEGGINGS()->getTypeId(),
+                VanillaItems::CHAINMAIL_LEGGINGS()->getTypeId(),
+                VanillaItems::IRON_LEGGINGS()->getTypeId(),
+                VanillaItems::DIAMOND_LEGGINGS()->getTypeId(),
+                VanillaItems::NETHERITE_LEGGINGS()->getTypeId()
+            ])) {
+                $flags |= ItemFlags::LEGS;
+            }
+            if(in_array($itemTypeId, [
+                VanillaItems::LEATHER_BOOTS()->getTypeId(),
+                VanillaItems::GOLDEN_BOOTS()->getTypeId(),
+                VanillaItems::CHAINMAIL_BOOTS()->getTypeId(),
+                VanillaItems::IRON_BOOTS()->getTypeId(),
+                VanillaItems::DIAMOND_BOOTS()->getTypeId(),
+                VanillaItems::NETHERITE_BOOTS()->getTypeId()
+            ])) {
+                $flags |= ItemFlags::FEET;
+            }
+        }
+        return $flags;
     }
+
     public static function canApplyEnchant(string $enchantName, Item $item): bool
     {
-        $enchantName = strtolower(str_replace(" ", "", $enchantName));
+        $enchantName = strtolower($enchantName);
         $mapping = self::$class_map[$enchantName] ?? null;
         if (!$mapping) {
             return false;
@@ -269,10 +234,10 @@ final class EnchantManager
         $itemTypeFlags = self::getItemTypeFlags($item);
 
         foreach ($requiredFlags as $requiredFlag) {
-            if (($itemTypeFlags & $requiredFlag) === 0) {
-                return false;
+            if (($itemTypeFlags & $requiredFlag) !== 0) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
