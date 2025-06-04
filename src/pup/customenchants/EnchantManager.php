@@ -155,74 +155,84 @@ final class EnchantManager
         return $returnValue;
     }
 
-    private static function getItemTypeFlags(Item $item, bool $specifyId = true) : int
-    {
-        $flags = 0;
-
+    private static function getItemTypeFlags(Item $item) : int {
         if($item instanceof Sword) {
-            $flags |= ItemFlags::SWORD;
-        } elseif($item instanceof Bow) {
-            $flags |= ItemFlags::BOW;
-        } elseif($item instanceof Pickaxe) {
-            $flags |= ItemFlags::PICKAXE;
-        } elseif($item instanceof Tool){
-            $flags |= ItemFlags::TOOL;
+            return ItemFlags::SWORD;
+        }
+        if($item instanceof Bow) {
+            return ItemFlags::BOW;
+        }
+        if($item instanceof Pickaxe) {
+            return ItemFlags::PICKAXE;
+        }
+        if($item instanceof Axe) {
+            return ItemFlags::AXE;
+        }
+        if($item instanceof Shovel) {
+            return ItemFlags::SHOVEL;
+        }
+        if($item instanceof Hoe) {
+            return ItemFlags::HOE;
+        }
+        if($item instanceof Tool) {
+            return ItemFlags::DIG;
         }
 
         if ($item instanceof Armor) {
-            $flags |= ItemFlags::ARMOR;
+                $itemTypeId = $item->getTypeId();
+                // Helmets
+                if(in_array($itemTypeId, [
+                    VanillaItems::LEATHER_CAP()->getTypeId(),
+                    VanillaItems::GOLDEN_HELMET()->getTypeId(),
+                    VanillaItems::CHAINMAIL_HELMET()->getTypeId(),
+                    VanillaItems::IRON_HELMET()->getTypeId(),
+                    VanillaItems::DIAMOND_HELMET()->getTypeId(),
+                    VanillaItems::NETHERITE_HELMET()->getTypeId()
+                ])) {
+                    return ItemFlags::HEAD;
+                }
+                // Chestplates
+                if(in_array($itemTypeId, [
+                    VanillaItems::LEATHER_TUNIC()->getTypeId(),
+                    VanillaItems::GOLDEN_CHESTPLATE()->getTypeId(),
+                    VanillaItems::CHAINMAIL_CHESTPLATE()->getTypeId(),
+                    VanillaItems::IRON_CHESTPLATE()->getTypeId(),
+                    VanillaItems::DIAMOND_CHESTPLATE()->getTypeId(),
+                    VanillaItems::NETHERITE_CHESTPLATE()->getTypeId()
+                ])) {
+                    return ItemFlags::TORSO;
+                }
+                // Leggings
+                if(in_array($itemTypeId, [
+                    VanillaItems::LEATHER_PANTS()->getTypeId(),
+                    VanillaItems::GOLDEN_LEGGINGS()->getTypeId(),
+                    VanillaItems::CHAINMAIL_LEGGINGS()->getTypeId(),
+                    VanillaItems::IRON_LEGGINGS()->getTypeId(),
+                    VanillaItems::DIAMOND_LEGGINGS()->getTypeId(),
+                    VanillaItems::NETHERITE_LEGGINGS()->getTypeId()
+                ])) {
+                    return ItemFlags::LEGS;
+                }
+                // Boots
+                if(in_array($itemTypeId, [
+                    VanillaItems::LEATHER_BOOTS()->getTypeId(),
+                    VanillaItems::GOLDEN_BOOTS()->getTypeId(),
+                    VanillaItems::CHAINMAIL_BOOTS()->getTypeId(),
+                    VanillaItems::IRON_BOOTS()->getTypeId(),
+                    VanillaItems::DIAMOND_BOOTS()->getTypeId(),
+                    VanillaItems::NETHERITE_BOOTS()->getTypeId()
+                ])) {
+                    return ItemFlags::FEET;
+                }
         }
-        if($specifyId){
-            $itemTypeId = $item->getTypeId();
-            if(in_array($itemTypeId, [
-                VanillaItems::LEATHER_CAP()->getTypeId(),
-                VanillaItems::GOLDEN_HELMET()->getTypeId(),
-                VanillaItems::CHAINMAIL_HELMET()->getTypeId(),
-                VanillaItems::IRON_HELMET()->getTypeId(),
-                VanillaItems::DIAMOND_HELMET()->getTypeId(),
-                VanillaItems::NETHERITE_HELMET()->getTypeId()
-            ])) {
-                $flags |= ItemFlags::HEAD;
-            }
-            if(in_array($itemTypeId, [
-                VanillaItems::LEATHER_TUNIC()->getTypeId(),
-                VanillaItems::GOLDEN_CHESTPLATE()->getTypeId(),
-                VanillaItems::CHAINMAIL_CHESTPLATE()->getTypeId(),
-                VanillaItems::IRON_CHESTPLATE()->getTypeId(),
-                VanillaItems::DIAMOND_CHESTPLATE()->getTypeId(),
-                VanillaItems::NETHERITE_CHESTPLATE()->getTypeId()
-            ])) {
-                $flags |= ItemFlags::TORSO;
-            }
-            if(in_array($itemTypeId, [
-                VanillaItems::LEATHER_PANTS()->getTypeId(),
-                VanillaItems::GOLDEN_LEGGINGS()->getTypeId(),
-                VanillaItems::CHAINMAIL_LEGGINGS()->getTypeId(),
-                VanillaItems::IRON_LEGGINGS()->getTypeId(),
-                VanillaItems::DIAMOND_LEGGINGS()->getTypeId(),
-                VanillaItems::NETHERITE_LEGGINGS()->getTypeId()
-            ])) {
-                $flags |= ItemFlags::LEGS;
-            }
-            if(in_array($itemTypeId, [
-                VanillaItems::LEATHER_BOOTS()->getTypeId(),
-                VanillaItems::GOLDEN_BOOTS()->getTypeId(),
-                VanillaItems::CHAINMAIL_BOOTS()->getTypeId(),
-                VanillaItems::IRON_BOOTS()->getTypeId(),
-                VanillaItems::DIAMOND_BOOTS()->getTypeId(),
-                VanillaItems::NETHERITE_BOOTS()->getTypeId()
-            ])) {
-                $flags |= ItemFlags::FEET;
-            }
-        }
-        return $flags;
+
+        return ItemFlags::NONE;
     }
 
-    public static function canApplyEnchant(string $enchantName, Item $item): bool
-    {
-        $enchantName = strtolower($enchantName);
+    public static function canApplyEnchant(string $enchantName, Item $item): bool {
+        $enchantName = strtolower(str_replace(" ", "", $enchantName));
         $mapping = self::$class_map[$enchantName] ?? null;
-        if (!$mapping) {
+        if ($mapping === null) {
             return false;
         }
 
@@ -233,11 +243,20 @@ final class EnchantManager
 
         $itemTypeFlags = self::getItemTypeFlags($item);
 
+        if ($item instanceof Armor) {
+            foreach ($requiredFlags as $requiredFlag) {
+                if ($requiredFlag === $itemTypeFlags) {
+                    return true;
+                }
+            }
+        }
+
         foreach ($requiredFlags as $requiredFlag) {
             if (($itemTypeFlags & $requiredFlag) !== 0) {
                 return true;
             }
         }
+
         return false;
     }
 }
