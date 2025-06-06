@@ -7,3 +7,5 @@ A PocketMine-MP plugin that adds powerful custom enchantments to your server.
 
 ## Credit
 Originally based on [ATEnchants](https://github.com/Prim69-PM/ATEnchants) by Prim69
+
+Ion even wanna finish this ;-;

@@ -6,12 +6,18 @@ namespace pup\customenchants;
 
 use pocketmine\data\bedrock\EnchantmentIdMap;
 use pocketmine\item\Armor;
+use pocketmine\item\Axe;
 use pocketmine\item\Bow;
 use pocketmine\item\enchantment\ItemFlags;
+use pocketmine\item\Hoe;
 use pocketmine\item\Item;
-use pup\customenchants\enchants\armor\{BunnyEnchant, GearsEnchant, GlowingEnchant, OverloadEnchant};
+use pup\customenchants\enchants\armor\{boots\BunnyEnchant,
+    boots\GearsEnchant,
+    helmet\GlowingEnchant,
+    OverloadEnchant};
 use pup\customenchants\enchants\sword\{AronistEnchant, BlindEnchant, DazeEnchant, ZuesEnchant};
 use pocketmine\item\Pickaxe;
+use pocketmine\item\Shovel;
 use pocketmine\item\Sword;
 use pocketmine\item\Tool;
 use pocketmine\item\VanillaItems;
@@ -19,11 +25,12 @@ use pup\customenchants\enchants\bow\TeleportEnchant;
 use pup\customenchants\enchants\tools\hoe\SpeedEnchant;
 use pup\customenchants\enchants\tools\pickaxe\{DrillEnchant, FeedEnchant, HasteEnchant};
 use pup\customenchants\types\WeaponEnchant;
+use pup\customenchants\utils\Rarity;
 use RuntimeException;
 
 final class EnchantManager
 {
-    public const IDS = [
+    public const array IDS = [
         //Start this at 1k cus wtf bedrock!
         //Seems 1k is too much?
         'feed'     => 1000,
