@@ -79,7 +79,11 @@ final class Rarity
 
     public static function fromName(string $name): int
     {
-        //Defaults to common so you cant really use any other rarities :p
-        return constant("self::$name") ?? self::COMMON;
+        foreach (self::$rarities as $id => $rarity) {
+            if (strtoupper($name) === $rarity['name'] && self::isEnabled($id)) {
+                return $id;
+            }
+        }
+        return self::UNCOMMON;
     }
 }

@@ -5,6 +5,12 @@ api: 5.0.0
 version: 1.1.0
 
 permissions:
-  enchanter.command:
+  enchant.command:
     default: op
-    description: Adds an enchant to the item in hand
+    description: Base enchant command
+  enchant.command.add:
+    default: op
+    description: Add an enchant to an item
+  enchant.command.remove:
+    default: op
+    description: Remove an enchant from an item

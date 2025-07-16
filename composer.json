@@ -2,7 +2,10 @@
   "name": "dre/pm",
   "description": "description",
   "require": {
-    "pocketmine/pocketmine-mp": "*"
+    "pocketmine/pocketmine-mp": "*",
+    "muqsit/simple-packet-handler": "*",
+    "paroxity/commando": "3.2.1",
+    "muqsit/invmenu": "dev-pm5-delay-rework"
   },
   "autoload": {
     "classmap": [

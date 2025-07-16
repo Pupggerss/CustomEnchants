@@ -30,7 +30,7 @@ use RuntimeException;
 
 final class EnchantManager
 {
-    public const array IDS = [
+    public const  IDS = [
         //Start this at 1k cus wtf bedrock!
         //Seems 1k is too much?
         'feed'     => 1000,
@@ -120,28 +120,45 @@ final class EnchantManager
         return $enchant;
     }
 
-    public static function loreItem(Item $item)
-    : Item
+    public static function loreItem(Item $item): Item
     {
-        //TODO: Config lore customization
         if (!is_null($item->getNamedTag()->getTag("hideEnchantments"))) {
             return $item;
         }
 
+        $config = Main::getInstance()->getConfig();
         $enchantLore = [];
+
         foreach ($item->getEnchantments() as $enchantmentInstance) {
             $enchantment = $enchantmentInstance->getType();
-            if(!$enchantment instanceof CustomEnchant){
+            if (!$enchantment instanceof CustomEnchant) {
                 continue;
             }
+
             $rarity = $enchantment->getRarity();
             $color = Rarity::getColor($rarity);
+            $level = $enchantmentInstance->getLevel();
 
-            $enchantLore[" §r§8» §r" . $color . $enchantment->getName() . " " . self::intToRoman($enchantmentInstance->getLevel())] = $rarity;
+            $levelDisplay = $config->getNested('enchant_lore.roman_numerals', true)
+                ? self::intToRoman($level)
+                : $level;
+
+            $entry = str_replace(
+                ['{color}', '{name}', '{level}'],
+                [$color, $enchantment->getName(), $levelDisplay],
+                $config->getNested('enchant_lore.entry_format', " §r§8» §r{color}{name} {level}")
+            );
+
+            $enchantLore[$entry] = $rarity;
         }
-        asort($enchantLore);
-        $lore = ["§r§dEnchantments:"];
+
+        if ($config->getNested('enchant_lore.sort_by_rarity', true)) {
+            asort($enchantLore);
+        }
+
+        $lore = [$config->getNested('enchant_lore.header', "§r§dEnchantments:")];
         $lore = array_merge($lore, array_keys($enchantLore));
+
         $item->setLore($lore);
         return $item;
     }

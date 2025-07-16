@@ -27,7 +27,7 @@ abstract class BowEnchant extends CustomEnchant
             return;
         }
         $player = $arrow->getOwningEntity();
-        if ($player && $player instanceof Player) {
+        if ($player instanceof Player) {
             $item = $player->getInventory()->getItemInHand();
             foreach ($item->getEnchantments() as $enchant) {
                 if (($enchant = $enchant->getType()) instanceof self) {

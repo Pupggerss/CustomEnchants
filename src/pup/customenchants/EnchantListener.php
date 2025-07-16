@@ -11,6 +11,7 @@ use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerQuitEvent;
 use pup\customenchants\types\BowEnchant;
 use pup\customenchants\types\RandomArmorEnchant;
 use pup\customenchants\types\ToggledArmorEnchant;
@@ -55,7 +56,7 @@ class EnchantListener implements Listener
      * @param ProjectileHitBlockEvent $event
      * @priority HIGHEST
      */
-    public function onShoot(ProjectileHitBlockEvent $event)
+    public function onBlockHit(ProjectileHitBlockEvent $event)
     : void
     {
         BowEnchant::onHitBlock($event);
@@ -93,8 +94,19 @@ class EnchantListener implements Listener
                 $enchantment = $enchantment->getType();
                 if ($enchantment instanceof ToggledArmorEnchant) {
                     $enchantment->onDequip($player, $item);
+                    ToggledArmorEnchant::removeArmorListener($player);
                 }
             }
         }
+    }
+
+    /**
+     * @param PlayerQuitEvent $event
+     * @priority HIGHEST
+     */
+    public function onQuit(PlayerQuitEvent $event): void
+    {
+        $player = $event->getPlayer();
+        ToggledArmorEnchant::removeArmorListener($player);
     }
 }
