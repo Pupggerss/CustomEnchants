@@ -8,6 +8,7 @@ use pocketmine\data\bedrock\EnchantmentIdMap;
 use pocketmine\item\Armor;
 use pocketmine\item\Axe;
 use pocketmine\item\Bow;
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\ItemFlags;
 use pocketmine\item\Hoe;
 use pocketmine\item\Item;
@@ -21,9 +22,12 @@ use pocketmine\item\Shovel;
 use pocketmine\item\Sword;
 use pocketmine\item\Tool;
 use pocketmine\item\VanillaItems;
+use pocketmine\lang\Translatable;
+use pocketmine\utils\TextFormat;
 use pup\customenchants\enchants\bow\TeleportEnchant;
 use pup\customenchants\enchants\tools\hoe\SpeedEnchant;
 use pup\customenchants\enchants\tools\pickaxe\{DrillEnchant, FeedEnchant, HasteEnchant};
+use pup\customenchants\items\ItemRegistry;
 use pup\customenchants\types\WeaponEnchant;
 use pup\customenchants\utils\Rarity;
 use RuntimeException;
@@ -70,6 +74,7 @@ final class EnchantManager
     {
         $this->enchant_data = json_decode(file_get_contents(Main::getInstance()->getDataFolder() . "enchantments.json"), true);
         $this->initEnchants();
+        ItemRegistry::init();
     }
 
     public function initEnchants(): void
@@ -122,47 +127,60 @@ final class EnchantManager
 
     public static function loreItem(Item $item): Item
     {
-        if (!is_null($item->getNamedTag()->getTag("hideEnchantments"))) {
+        //TODO: Update Lores
+        if ($item->getNamedTag()->getTag("hideEnchantments") !== null) {
             return $item;
         }
 
         $config = Main::getInstance()->getConfig();
         $enchantLore = [];
+        $currentLore = $item->getLore();
 
         foreach ($item->getEnchantments() as $enchantmentInstance) {
             $enchantment = $enchantmentInstance->getType();
-            if (!$enchantment instanceof CustomEnchant) {
-                continue;
-            }
 
             $rarity = $enchantment->getRarity();
             $color = Rarity::getColor($rarity);
             $level = $enchantmentInstance->getLevel();
+            $name = $enchantment->getName();
+            if($name instanceof Translatable){
+                $name = $name->getText();
+            }
 
             $levelDisplay = $config->getNested('enchant_lore.roman_numerals', true)
                 ? self::intToRoman($level)
                 : $level;
 
-            $entry = str_replace(
+            $entry = TextFormat::colorize(str_replace(
                 ['{color}', '{name}', '{level}'],
-                [$color, $enchantment->getName(), $levelDisplay],
-                $config->getNested('enchant_lore.entry_format', " §r§8» §r{color}{name} {level}")
-            );
+                [$color, $name, $levelDisplay],
+                $config->getNested('enchant_lore.entry_format', "&r&8» &r{color}{name} {level}")
+            ));
 
             $enchantLore[$entry] = $rarity;
         }
 
-        if ($config->getNested('enchant_lore.sort_by_rarity', true)) {
+        if ($config->getNested('enchant_lore.sort_by_rarity', true) && !empty($enchantLore)) {
             asort($enchantLore);
+            $enchantLore = array_keys($enchantLore);
         }
 
-        $lore = [$config->getNested('enchant_lore.header', "§r§dEnchantments:")];
-        $lore = array_merge($lore, array_keys($enchantLore));
+        $newLore = [];
+        if (!empty($enchantLore)) {
+            $header = TextFormat::colorize($config->getNested('enchant_lore.header', "&r&dEnchantments:"));
+            array_unshift($enchantLore, $header);
+            $newLore = $enchantLore;
+        }
 
-        $item->setLore($lore);
+        $finalLore = array_merge($currentLore, $newLore);
+
+        $finalLore = array_filter($finalLore, function($line) {
+            return is_string($line) && trim($line) !== '';
+        });
+
+        $item->setLore(array_values($finalLore));
         return $item;
     }
-
     public static function intToRoman($number): string
     {
         $map = array('M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1);
@@ -282,5 +300,17 @@ final class EnchantManager
         }
 
         return false;
+    }
+
+    public static function nameToId(string $name)
+    : int
+    {
+        return self::IDS[strtolower($name)] ?? -1;
+    }
+
+    public static function idToEnchant(int $id)
+    : ?Enchantment
+    {
+        return EnchantmentIdMap::getInstance()->fromId($id);
     }
 }

@@ -9,7 +9,7 @@ use pocketmine\item\enchantment\ItemFlags;
 use pup\customenchants\utils\ChanceTrait;
 
 
-class CustomEnchant extends Enchantment
+abstract class CustomEnchant extends Enchantment
 {
     use ChanceTrait;
 

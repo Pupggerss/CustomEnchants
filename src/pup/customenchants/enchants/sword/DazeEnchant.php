@@ -10,6 +10,7 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\player\Player;
 use pup\customenchants\types\WeaponEnchant;
+use Random\RandomException;
 
 class DazeEnchant extends WeaponEnchant
 {
@@ -32,6 +33,9 @@ class DazeEnchant extends WeaponEnchant
         return 0;
     }
 
+    /**
+     * @throws RandomException
+     */
     public function onPostAttack(Entity $attacker, Entity $victim, int $enchantmentLevel)
     : void
     {
