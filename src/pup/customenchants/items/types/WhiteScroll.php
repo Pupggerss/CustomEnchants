@@ -122,10 +122,12 @@ final class WhiteScroll extends CustomItem implements InventoryTransactionInterf
         $this->holy = true;
     }
 
-    public function removeHoly(): void
+    public function removeHoly(): Item
     {
         if($this->isHoly($this->getItem())){
             $this->holy = false;
+            return (new self())->getItem();
         }
+        return $this->getItem();
     }
 }

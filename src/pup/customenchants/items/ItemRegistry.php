@@ -3,7 +3,9 @@
 namespace pup\customenchants\items;
 
 use InvalidArgumentException;
+use pocketmine\item\enchantment\VanillaEnchantments;
 use pup\customenchants\items\types\BlackScroll;
+use pup\customenchants\items\types\EnchantmentBook;
 use pup\customenchants\items\types\WhiteScroll;
 
 //TODO: Remove and use base classes
@@ -17,8 +19,8 @@ final class ItemRegistry
     public static function init()
     : void
     {
-        self::register(new WhiteScroll(true));
-        self::register(new BlackScroll(100));
+        self::register(new WhiteScroll());
+        self::register(new BlackScroll());
     }
 
     public static function register(CustomItem $item)

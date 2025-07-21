@@ -13,6 +13,7 @@ use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pup\customenchants\items\ItemRegistry;
+use pup\customenchants\items\types\EnchantmentBook;
 use pup\customenchants\types\BowEnchant;
 use pup\customenchants\types\RandomArmorEnchant;
 use pup\customenchants\types\ToggledArmorEnchant;

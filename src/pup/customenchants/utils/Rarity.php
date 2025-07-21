@@ -77,6 +77,11 @@ final class Rarity
         return self::$rarities[$rarity]['color'] ?? '§f';
     }
 
+    public static function getName(int $rarity): string
+    {
+        return self::$rarities[$rarity]['name'] ?? 'UNKNOWN';
+    }
+
     public static function fromName(string $name): int
     {
         foreach (self::$rarities as $id => $rarity) {

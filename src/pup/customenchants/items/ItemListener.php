@@ -5,8 +5,11 @@ namespace pup\customenchants\items;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\inventory\transaction\action\SlotChangeAction;
+use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\utils\TextFormat;
+use pup\customenchants\EnchantManager;
 use pup\customenchants\items\interface\InventoryTransactionInterface;
+use pup\customenchants\items\types\EnchantmentBook;
 use Throwable;
 
 final class ItemListener implements Listener
@@ -41,7 +44,18 @@ final class ItemListener implements Listener
                 }
 
                 $customItemId = $itemClickedWith->getNamedTag()->getString("customItem");
-                $customItem = ItemRegistry::fromId($customItemId);
+
+                if ($customItemId === "enchantment_book") {
+                    $enchantName = $itemClickedWith->getNamedTag()->getString("enchant", "");
+                    $enchantLevel = $itemClickedWith->getNamedTag()->getInt("level", 1);
+
+                    $customItem = new EnchantmentBook(
+                        EnchantManager::idToEnchant(EnchantManager::nameToId($enchantName)) ?? VanillaEnchantments::PROTECTION(),
+                        $enchantLevel
+                    );
+                } else {
+                    $customItem = ItemRegistry::fromId($customItemId);
+                }
 
                 if ($customItem instanceof InventoryTransactionInterface) {
                     $customItem->onInventoryTransaction(
