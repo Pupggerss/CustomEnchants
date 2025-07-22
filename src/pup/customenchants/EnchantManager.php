@@ -62,7 +62,7 @@ final class EnchantManager
         'gears' => ['class' => GearsEnchant::class, 'flags' => [ItemFlags::FEET]],
         'glowing' => ['class' => GlowingEnchant::class, 'flags' => [ItemFlags::HEAD]],
         'overload' => ['class' => OverloadEnchant::class, 'flags' => [ItemFlags::ARMOR]],
-        'aronsit' => ['class' => AronistEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
+        'aronist' => ['class' => AronistEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
         'blind' => ['class' => BlindEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
         'daze' => ['class' => DazeEnchant::class, 'flags' => [ItemFlags::SWORD]],
         'zues' => ['class' => ZuesEnchant::class, 'flags' => [ItemFlags::SWORD, ItemFlags::AXE]],
@@ -79,22 +79,52 @@ final class EnchantManager
 
     public function initEnchants(): void
     {
+        $enchantmentsFile = Main::getInstance()->getDataFolder() . "enchantments.json";
+        $enchantmentsData = json_decode(file_get_contents($enchantmentsFile), true) ?? [];
+        $updated = false;
+
         foreach (self::IDS as $name => $id) {
             try {
+                if (!isset($enchantmentsData[$name])) {
+                    $enchantmentsData[$name] = $this->createDefaultEnchantmentData($name);
+                    $updated = true;
+                    Main::getInstance()->getLogger()->info("Added missing enchantment data for $name");
+                }
+
                 if ($enchant = $this->createConfiguredEnchant($name)) {
                     EnchantmentIdMap::getInstance()->register($id, $enchant);
-                    Main::getInstance()->getLogger()->info("Added {$enchant->getName()}");
+                    Main::getInstance()->getLogger()->info("Registered {$enchant->getName()}");
                 }
             } catch (RuntimeException $e) {
                 Main::getInstance()->getLogger()->error($e->getMessage());
             }
         }
+
+        if ($updated) {
+            file_put_contents($enchantmentsFile, json_encode($enchantmentsData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            $this->enchant_data = $enchantmentsData;
+        }
+    }
+
+    private function createDefaultEnchantmentData(string $name): array
+    {
+        $mapping = self::$class_map[$name] ?? [];
+
+        return [
+            'enabled' => true,
+            'display_name' => ucfirst($name),
+            'description' => 'Auto-generated enchantment (Please change!)',
+            'rarity' => 'COMMON',
+            'max_level' => 1,
+            'has_chance' => false,
+            'base_chance' => 0.1,
+            //Add => ? 'flags' => $mapping['flags'] ?? []
+        ];
     }
 
     private function createConfiguredEnchant(string $name): CustomEnchant|WeaponEnchant|null
     {
-        $data = $this->enchant_data[$name] ?? null;
-        if (!$data || !($data['enabled'] ?? true)) return null;
+        $data = $this->enchant_data[$name] ?? $this->createDefaultEnchantmentData($name);
 
         $mapping = self::$class_map[$name] ?? null;
 
@@ -118,6 +148,7 @@ final class EnchantManager
 
         $enchant = new $className(...$constructorArgs);
 
+        //Chance is on the enchant whether the base chance is set.
         if ($data['has_chance'] ?? false) {
             $enchant->setBaseChance($data['base_chance'] ?? 0.1);
         }

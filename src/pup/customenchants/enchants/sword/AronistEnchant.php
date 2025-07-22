@@ -7,9 +7,11 @@ namespace pup\customenchants\enchants\sword;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
 use pocketmine\world\particle\FlameParticle;
 use pup\customenchants\types\WeaponEnchant;
+use Random\RandomException;
 
 class AronistEnchant extends WeaponEnchant
 {
@@ -31,6 +33,9 @@ class AronistEnchant extends WeaponEnchant
         return 0;
     }
 
+    /**
+     * @throws RandomException
+     */
     public function onPostAttack(Entity $attacker, Entity $victim, int $enchantmentLevel)
     : void
     {
@@ -40,7 +45,7 @@ class AronistEnchant extends WeaponEnchant
                 while ($attacker->isOnFire()) {
                     $additionalDamage = $enchantmentLevel * 1.5;
 
-                    $event = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageByEntityEvent::CAUSE_CUSTOM, $additionalDamage);
+                    $event = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CUSTOM, $additionalDamage);
                     $victim->attack($event);
                 }
                 $attacker->getWorld()->addParticle($victim->getPosition(), new FlameParticle());
